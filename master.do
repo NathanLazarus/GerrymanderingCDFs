@@ -1,7 +1,7 @@
 //master.do
 
 clear
-cd `c(sysdir_plus)'../../Users/`c(username)'/GerrymanderingCDFs
+cd ~/GerrymanderingCDFs
 //set scheme uncluttered
 //(see https://github.com/graykimbrough/uncluttered-stata-graphs)
 ssc install _gwtmean
