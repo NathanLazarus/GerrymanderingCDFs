@@ -1,7 +1,7 @@
 //master.do
 
 clear
-cd `c(sysdir_plus)'../../Users/`c(username)'/Downloads/GerrymanderingCDFs
+cd `c(sysdir_plus)'../../Users/`c(username)'/GerrymanderingCDFs
 //set scheme uncluttered
 //(see https://github.com/graykimbrough/uncluttered-stata-graphs)
 ssc install _gwtmean
@@ -47,8 +47,8 @@ di "`shift'"
 
 global shift = `shift'
 preserve
-do uncropped.do
+do code/uncropped.do
 restore, preserve
-do cropped.do
+do code/cropped.do
 restore, preserve
-do multigraph.do
+do code/multigraph.do
