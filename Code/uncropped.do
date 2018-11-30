@@ -1,14 +1,22 @@
 //uncropped.do
 
-local shift = $shift
-gen repneed = demshare //Repub would win the seat with >demshare
-gen demneed = 100-repneed
+local marg = $marg
+//gen repneed = demshare //Repub would win the seat with >demshare
+//gen demneed = 100-repneed
+gen demneed = .
+gen popv = .
+forvalues i=1/435{
+	replace popv = max(0,min(100,demshare+50-demshare[`i']))
+	sum popv [iw=totalvotes], meanonly
+	replace demneed = r(mean) in `i'
+}
+gen repneed=100-demneed
 sort repneed
 gen repseats = _n
 sort demneed
 gen demseats = _n
 
-local demgot = 50+`shift'
+local demgot = 50+`marg'
 gen gotten = demneed<=`demgot'
 gen popshare2018 = `demgot' in 1
 qui sum gotten
@@ -31,7 +39,7 @@ if inrange(`repmarg',-0.99,-0) {
 local repmarg =  abs(`repmarg')
 local repmarg= "-0`repmarg'"
 }
-local demmarg = round(2*`shift',0.1)
+local demmarg = round(2*`marg',0.1)
 
 expand 2, gen(add)
 replace demseats=demseats-add

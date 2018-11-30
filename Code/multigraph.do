@@ -1,6 +1,6 @@
 //multigraph.do
 
-local shift = $shift
+local marg = $marg
 local maps = "algorithmiccompact Compact Competitive Proportional Dem GOP"
 local marginlimits = 20
 
@@ -41,11 +41,21 @@ foreach altmap of local maps { //this is entirely a dry run of the code to find 
 	drop sortorder*
 	merge 1:1 uniqueid using `results', nogen
 
-	reg demshare c.pvicurrent##c.pvicurrent if state != "PA"
-	gen fakeshare = _b[pvicurrent]*pvi`altmap'+_b[c.pvicurrent#c.pvicurrent]*pvi`altmap'*pvi`altmap'+_b[_cons]
+	reg demshare c.pvicurrent##c.pvicurrent##c.pvicurrent##c.pvicurrent if state != "PA"
+	gen fakeshare = _b[_cons]+_b[pvicurrent]*pvi`altmap'+_b[c.pvicurrent#c.pvicurrent]*pvi`altmap'*pvi`altmap' //+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvi`altmap'^3+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvi`altmap'^4
+	sum fakeshare [iw=totalvotes]
+	replace fakeshare = fakeshare-r(mean)+50
 
-	gen fakerepneed = fakeshare
-	gen fakedemneed = 100-fakerepneed
+	//gen fakerepneed = fakeshare
+	//gen fakedemneed = 100-fakerepneed
+	gen fakedemneed = .
+	gen fakepopv = .
+	forvalues i=1/435{
+		replace fakepopv = max(0,min(100,fakeshare+50-fakeshare[`i']))
+		sum fakepopv [iw=totalvotes], meanonly
+		replace fakedemneed = r(mean) in `i'
+	}
+	gen fakerepneed=100-fakedemneed
 	sort fakerepneed
 	gen fakerepseats = _n
 	sort fakedemneed
@@ -58,8 +68,16 @@ foreach altmap of local maps { //this is entirely a dry run of the code to find 
 	use `all'
 
 
-	gen repneed = demshare //Repub would win the seat with >demshare
-	gen demneed = 100-repneed
+	//gen repneed = demshare //Repub would win the seat with >demshare
+	//gen demneed = 100-repneed
+	gen demneed = .
+	gen popv = .
+	forvalues i=1/435{
+		replace popv = max(0,min(100,demshare+50-demshare[`i']))
+		sum popv [iw=totalvotes], meanonly
+		replace demneed = r(mean) in `i'
+	}
+	gen repneed=100-demneed
 	sort demneed
 
 	gen sortorder = _n
@@ -78,15 +96,17 @@ foreach altmap of local maps { //this is entirely a dry run of the code to find 
 	qui sum fakerepseats
 	local repmin = r(min)
 	local repmax = r(max)
-	di "`demmin',`repmin',`axismin'"
 	local axismin = min(`demmin',`repmin',`axismin')
 	local axismax = max(`demmax',`repmax',`axismax')
 	restore, preserve
 }
 
+gen fuck = "this"
+//restore
 
 local counter = 1
 foreach altmap of local maps {
+//local altmap = "Compact"
 	if "`altmap'" == "algorithmiccompact" local altmapname = "Compact Districts"
 	if "`altmap'" == "Compact" local altmapname = "Compact, Follow County Borders"
 	if "`altmap'" == "Dem" local altmapname = "Democratic Gerrymander"
@@ -119,17 +139,59 @@ foreach altmap of local maps {
 	drop sortorder*
 	merge 1:1 uniqueid using `results', nogen
 
+	//the quartic matches the loess really well
+	sum demshare if state!="PA"
+	sum pvicurrent if state!="PA"
+	reg demshare pvicurrent if state!="PA"
+	local lincons = _b[_cons]
+	local lincoef = _b[pvicu]
+	rvfplot
+	gen fakeshare1 = _b[pvicurrent]*pvi`altmap'+_b[_cons]
+	reg demshare c.pvicurrent##c.pvicurrent /*##c.pvicurrent##c.pvicurrent*/ if state != "PA"
+	gen fakeshare = _b[_cons]+_b[pvicurrent]*pvi`altmap'+_b[c.pvicurrent#c.pvicurrent]*pvi`altmap'*pvi`altmap' //+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvi`altmap'^3+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvi`altmap'^4
+	gen fakeshare2test = _b[_cons]+_b[pvicurrent]*pvicu+_b[c.pvicurrent#c.pvicurrent]*pvicu*pvicu //+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvicu^3+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvicu^4
+	gen quarticresults = .
+	/*forvalues i=-10/10{
+		replace quarticresults = _b[pvicurrent]*`i'+_b[c.pvicurrent#c.pvicurrent]*`i'*`i'+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent]*`i'*`i'*`i'+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent#c.pvicurrent]*`i'^4+_b[_cons] in `=`i'+50'
+	}*/
+	rvfplot, name("quartic", replace)
 	reg demshare c.pvicurrent##c.pvicurrent if state != "PA"
-	gen fakeshare = _b[pvicurrent]*pvi`altmap'+_b[c.pvicurrent#c.pvicurrent]*pvi`altmap'*pvi`altmap'+_b[_cons]
-
-	gen fakerepneed = fakeshare
-	gen fakedemneed = 100-fakerepneed
+	gen fakeshare2 = _b[pvicurrent]*pvi`altmap'+_b[c.pvicurrent#c.pvicurrent]*pvi`altmap'*pvi`altmap'+_b[_cons]
+	sort fakeshare2test
+	graph twoway lfit demshare pvicu if state!="PA" || qfit demshare pvicu if state!="PA" || line fakeshare2test pvicu if state!="PA" || lowess demshare pvicu if state!="PA", name("q", replace)
+	forvalues i=-10/10{
+		local lin = `lincoef'*`i'+`lincons'
+		local quad = _b[pvicurrent]*`i'+_b[c.pvicurrent#c.pvicurrent]*`i'*`i'+_b[_cons]
+		local i50 = `i'+50
+		local quart = quarticresults[`i50']
+		di "at a PVI of `i', the linear model gives `lin'. The fucked up quadratic model, on the other hand, gives `quad'. The quartic gives `quart'"
+	}
+	//gen fakeshare = _b[pvicurrent]*pvicu+_b[c.pvicurrent#c.pvicurrent]*pvicu*pvicu+_b[_cons]
+	//gen fakeshare = pvi`altmap'+50
+	sum fakeshare
+	sum fakeshare [iw=totalvotes]
+	replace fakeshare = fakeshare-r(mean)+50
+	sum fakeshare1 [iw=totalv]
+	sum fakeshare2 [iw=totalv]
+	sum fakeshare if fakeshare<53.225
+	sum fakeshare if fakeshare>46.775
+	
+	//gen fakerepneed = fakeshare
+	//gen fakedemneed = 100-fakerepneed
+	gen fakedemneed = .
+	gen fakepopv = .
+	forvalues i=1/435{
+		replace fakepopv = max(0,min(100,fakeshare+50-fakeshare[`i']))
+		sum fakepopv [iw=totalvotes], meanonly
+		replace fakedemneed = r(mean) in `i'
+	}
+	gen fakerepneed=100-fakedemneed
+	
 	sort fakerepneed
 	gen fakerepseats = _n
 	sort fakedemneed
 	gen fakedemseats = _n
 	
-
 	tempfile all fake
 	save `all'
 	keep fake*
@@ -138,18 +200,26 @@ foreach altmap of local maps {
 	use `all'
 
 
-	gen repneed = demshare //Repub would win the seat with >demshare
-	gen demneed = 100-repneed
+	//gen repneed = demshare //Repub would win the seat with >demshare
+	//gen demneed = 100-repneed
+	gen demneed = .
+	gen popv = .
+	forvalues i=1/435{
+		replace popv = max(0,min(100,demshare+50-demshare[`i']))
+		sum popv [iw=totalvotes], meanonly
+		replace demneed = r(mean) in `i'
+	}
+	gen repneed=100-demneed
 	sort repneed
 	gen repseats = _n
 	sort demneed
 	gen demseats = _n
-
+	
 	gen sortorder = _n
 	drop fake*
 	merge 1:1 sortorder using `fake', nogen
 	
-	local demgot = 50+`shift'
+	local demgot = 50+`marg'
 	gen gotten = demneed<=`demgot'
 	qui sum gotten
 	replace gotten = .
@@ -170,14 +240,14 @@ foreach altmap of local maps {
 	replace fakewouldvegotten = .
 	replace fakewouldvegotten = r(sum) in 1
 	
+	
 	expand 2, gen(add)
 	replace demseats=demseats-add
 	replace repseats=repseats-(1-add)
 	replace fakedemseats=fakedemseats-add
 	replace fakerepseats=fakerepseats-(1-add)
 	sort demneed demseats
-	
-	
+		
 	set obs `=_N+2'
 	replace fakerepseats = 0 in `=_N-1'  //this sets the theoretical values of (0,0) and (100,435); they get dropped if they aren't needed
 	replace fakedemseats = 435 in `=_N-1'
@@ -275,8 +345,7 @@ foreach altmap of local maps {
 	sum goodmargin if repseats==`gotten'
 	local repmarg = round(r(mean),0.01)
 	if abs(`repmarg')<1 local repmarg =  "0`repmarg'"
-	local demmarg = round(2*`shift',0.01)
-	di "`demmarg'"
+	local demmarg = round(2*`marg',0.01)
 	
 	local lowerlim = 50-`marginlimits'/2
 	local upperlim = 50+`marginlimits'/2
