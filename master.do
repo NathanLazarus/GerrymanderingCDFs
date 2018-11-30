@@ -49,7 +49,8 @@ local fucked = r(mean)
 local whythefuck = `contested_share'-`fucked'
 gen olddemshare = demshare_ifcontested-`whythefuck' if contested == 1
 replace olddemshare = demean_2016 if contested == 0
-replace demshare = olddemshare
+//replace demshare = olddemshare
+//local marg = `whythefuck'
 
 /*gen simresults2018 = demshare_ifcontested if contested == 1
 replace simresults2018 = demshare_2016+`shift' if contested == 0
