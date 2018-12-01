@@ -1,16 +1,16 @@
 //uncropped.do
 
 local marg = $marg
-//gen repneed = demshare //Repub would win the seat with >demshare
-//gen demneed = 100-repneed
-gen demneed = .
+gen repneed = demshare //Repub would win the seat with >demshare
+gen demneed = 100-repneed
+/*gen demneed = . This was for the linear model (to censor vote shares at 100), and is rendered obsolete by log odds
 gen popv = .
 forvalues i=1/435{
 	replace popv = max(0,min(100,demshare+50-demshare[`i']))
 	sum popv [iw=totalvotes], meanonly
 	replace demneed = r(mean) in `i'
 }
-gen repneed=100-demneed
+gen repneed=100-demneed*/
 sort repneed
 gen repseats = _n
 sort demneed
@@ -58,25 +58,25 @@ replace demneed = 0 in `=_N'
 sort demneed demseats
 
 
-gen proportional = repseats*100/435 if add==0 // if fakerepseats!=0&fakedemseats!=0
+gen proportional = repseats*100/435 if add==0
 gen proportionallabel = "Proportional" if repseats ==64&add==0
 
 gen down = gotten - 6
 gen and_tothe_right = popshare2018+3.1
 gen left_alittle = popshare2018 - 0.2
 gen majority = 218
-gen majoritylabel = "Majority (218)" if repseats == 4&add==0
+gen majoritylabel = "Majority (218)" if repneed==0
 
 
 qui sum demneed if demneed>32&add==0
 gen demlab = `"Democrats"' if demneed == r(min)&add==0
-qui sum repneed if repneed>28&add==0
+qui sum repneed if repneed>30&add==0
 gen replab = `"Republicans"' if repneed == r(min)&add==0
 local symbol = "pipe"
 if c(version)<15 local symbol = "Oh"
 
-twoway connected repseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) mlab(proportionallabel) m(none) mlabpos(11) mlabgap(*.5) mlabcol(gs5) || ///
-	connected majority repneed, lcolor(sand) lwidth(medthin) mlab(majoritylabel) m(none) mlabpos(11) mlabgap(*2) mlabcol("219 112 41") || ///
+twoway connected majority repneed, lcolor(sand) lwidth(medthin) mlab(majoritylabel) m(none) mlabpos(2) mlabgap(*2.05) mlabcol("219 112 41") || ///
+	connected repseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) mlab(proportionallabel) m(none) mlabpos(11) mlabgap(*.5) mlabcol(gs5) || ///
 	connected repseats repneed, lcolor("220 34 34") m(none) mlab(replab) mlabpos(3) mlabcolor("220 34 34*1.1") mlabgap(*1.8) mlabsize(vsmall) || ///
 	connected demseats demneed, lcolor("22 107 170") m(none) mlab(demlab) mlabpos(9) mlabcolor("22 107 170*1.1") mlabgap(*3.5) mlabsize(vsmall) || ///
 	scatter gotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
@@ -88,7 +88,7 @@ twoway connected repseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs
 	ytitle("Seats", height(-8) orientation(horizontal) size(small)) xtitle("Popular Vote Margin", height(7)) ///
 	title("Seats by Popular Vote Margin") plotregion(margin(zero)) graphregion(margin(medlarge)) ///
 	note("Democrats won `gotten' seats with a popular vote margin of `demmarg'%.""Republicans could've won `gotten' seats with just `repmarg'%.""With `demmarg'%, Republicans would've won `wouldvegotten'.", size(vsmall) span) ///
-	caption("@NathanLazarus3", size(vsmall) j(right) pos(5) ring(3)) ///
+	///caption("@NathanLazarus3", size(vsmall) j(right) pos(5) ring(3)) ///
 	name(Uncropped, replace)
 
 	

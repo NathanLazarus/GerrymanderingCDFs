@@ -42,20 +42,12 @@ foreach altmap of local maps { //this is entirely a dry run of the code to find 
 	merge 1:1 uniqueid using `results', nogen
 
 	reg demshare c.pvicurrent##c.pvicurrent##c.pvicurrent##c.pvicurrent if state != "PA"
-	gen fakeshare = _b[_cons]+_b[pvicurrent]*pvi`altmap'+_b[c.pvicurrent#c.pvicurrent]*pvi`altmap'*pvi`altmap' //+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvi`altmap'^3+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvi`altmap'^4
+	gen fakeshare = _b[_cons]+_b[pvicurrent]*pvi`altmap'+_b[c.pvicurrent#c.pvicurrent]*pvi`altmap'^2+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvi`altmap'^3+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvi`altmap'^4
 	sum fakeshare [iw=totalvotes]
-	replace fakeshare = fakeshare-r(mean)+50
+	//replace fakeshare = fakeshare-r(mean)+50
 
-	//gen fakerepneed = fakeshare
-	//gen fakedemneed = 100-fakerepneed
-	gen fakedemneed = .
-	gen fakepopv = .
-	forvalues i=1/435{
-		replace fakepopv = max(0,min(100,fakeshare+50-fakeshare[`i']))
-		sum fakepopv [iw=totalvotes], meanonly
-		replace fakedemneed = r(mean) in `i'
-	}
-	gen fakerepneed=100-fakedemneed
+	gen fakerepneed = fakeshare
+	gen fakedemneed = 100-fakerepneed
 	sort fakerepneed
 	gen fakerepseats = _n
 	sort fakedemneed
@@ -68,16 +60,8 @@ foreach altmap of local maps { //this is entirely a dry run of the code to find 
 	use `all'
 
 
-	//gen repneed = demshare //Repub would win the seat with >demshare
-	//gen demneed = 100-repneed
-	gen demneed = .
-	gen popv = .
-	forvalues i=1/435{
-		replace popv = max(0,min(100,demshare+50-demshare[`i']))
-		sum popv [iw=totalvotes], meanonly
-		replace demneed = r(mean) in `i'
-	}
-	gen repneed=100-demneed
+	gen repneed = demshare
+	gen demneed = 100-repneed
 	sort demneed
 
 	gen sortorder = _n
@@ -101,12 +85,10 @@ foreach altmap of local maps { //this is entirely a dry run of the code to find 
 	restore, preserve
 }
 
-gen fuck = "this"
-//restore
+local axismin = `axismin'-2 //for a little more room
 
 local counter = 1
 foreach altmap of local maps {
-//local altmap = "Compact"
 	if "`altmap'" == "algorithmiccompact" local altmapname = "Compact Districts"
 	if "`altmap'" == "Compact" local altmapname = "Compact, Follow County Borders"
 	if "`altmap'" == "Dem" local altmapname = "Democratic Gerrymander"
@@ -139,53 +121,74 @@ foreach altmap of local maps {
 	drop sortorder*
 	merge 1:1 uniqueid using `results', nogen
 
-	//the quartic matches the loess really well
-	sum demshare if state!="PA"
-	sum pvicurrent if state!="PA"
 	reg demshare pvicurrent if state!="PA"
-	local lincons = _b[_cons]
-	local lincoef = _b[pvicu]
-	rvfplot
-	gen fakeshare1 = _b[pvicurrent]*pvi`altmap'+_b[_cons]
-	reg demshare c.pvicurrent##c.pvicurrent /*##c.pvicurrent##c.pvicurrent*/ if state != "PA"
-	gen fakeshare = _b[_cons]+_b[pvicurrent]*pvi`altmap'+_b[c.pvicurrent#c.pvicurrent]*pvi`altmap'*pvi`altmap' //+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvi`altmap'^3+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvi`altmap'^4
-	gen fakeshare2test = _b[_cons]+_b[pvicurrent]*pvicu+_b[c.pvicurrent#c.pvicurrent]*pvicu*pvicu //+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvicu^3+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvicu^4
-	gen quarticresults = .
-	/*forvalues i=-10/10{
-		replace quarticresults = _b[pvicurrent]*`i'+_b[c.pvicurrent#c.pvicurrent]*`i'*`i'+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent]*`i'*`i'*`i'+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent#c.pvicurrent]*`i'^4+_b[_cons] in `=`i'+50'
-	}*/
-	rvfplot, name("quartic", replace)
-	reg demshare c.pvicurrent##c.pvicurrent if state != "PA"
-	gen fakeshare2 = _b[pvicurrent]*pvi`altmap'+_b[c.pvicurrent#c.pvicurrent]*pvi`altmap'*pvi`altmap'+_b[_cons]
-	sort fakeshare2test
-	graph twoway lfit demshare pvicu if state!="PA" || qfit demshare pvicu if state!="PA" || line fakeshare2test pvicu if state!="PA" || lowess demshare pvicu if state!="PA", name("q", replace)
-	forvalues i=-10/10{
-		local lin = `lincoef'*`i'+`lincons'
-		local quad = _b[pvicurrent]*`i'+_b[c.pvicurrent#c.pvicurrent]*`i'*`i'+_b[_cons]
-		local i50 = `i'+50
-		local quart = quarticresults[`i50']
-		di "at a PVI of `i', the linear model gives `lin'. The fucked up quadratic model, on the other hand, gives `quad'. The quartic gives `quart'"
+	cv_regress //uses leave one out cross validation to select the degree of polynomial, up to order 8
+	//It's been picking 1 or 6 since the switch to log odds.
+	//The relationship between PVI and log odds is almost perfectly linear, so this matters a lot less than when the shifts were linear.
+	//With linear shifts, it looked like dems were underperforming in the most democratic areas—why weren't they shifting by 3 points like everywhere else?
+	local rmse = r(rmse)
+	local order = 1
+	local command = "c.pvicurrent##c.pvicurrent"
+	forvalues x=2/8 {
+		reg demshare `command' if state!="PA"
+		cv_regress
+		if `r(rmse)'<`rmse' local order = `x'
+		local rmse = min(`rmse',`r(rmse)')
+		local command = "`command'##c.pvicurrent"
 	}
-	//gen fakeshare = _b[pvicurrent]*pvicu+_b[c.pvicurrent#c.pvicurrent]*pvicu*pvicu+_b[_cons]
-	//gen fakeshare = pvi`altmap'+50
-	sum fakeshare
-	sum fakeshare [iw=totalvotes]
-	replace fakeshare = fakeshare-r(mean)+50
-	sum fakeshare1 [iw=totalv]
-	sum fakeshare2 [iw=totalv]
-	sum fakeshare if fakeshare<53.225
-	sum fakeshare if fakeshare>46.775
 	
-	//gen fakerepneed = fakeshare
-	//gen fakedemneed = 100-fakerepneed
-	gen fakedemneed = .
+	
+	replace pvicurrent = pvicurrent/50 //helps with orthoganalization, also just more logical units
+	replace pvi`altmap'=pvi`altmap'/50 
+	
+	/* to visualize the PVI share relationship
+	local lincons = _b[_cons]
+	local lincoef = _b[pvicurrent]
+	gen fakeshare1 = _b[pvicurrent]*pvi`altmap'+_b[_cons]
+	reg demshare c.pvicurrent##c.pvicurrent##c.pvicurrent##c.pvicurrent if state != "PA"
+	gen fakeshare4 = _b[_cons]+_b[pvicurrent]*pvi`altmap'+_b[c.pvicurrent#c.pvicurrent]*pvi`altmap'^2+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvi`altmap'^3+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvi`altmap'^4	
+	gen fakeshare2test = _b[_cons]+_b[pvicurrent]*pvicurrent+_b[c.pvicurrent#c.pvicurrent]*pvicurrent^2+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvicurrent^3+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent#c.pvicurrent]*pvicurrent^4
+	gen quarticresults = .
+	forvalues i=-0.2(0.02)0.2{
+		replace quarticresults = _b[pvicurrent]*`i'+_b[c.pvicurrent#c.pvicurrent]*`i'*`i'+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent]*`i'*`i'*`i'+_b[c.pvicurrent#c.pvicurrent#c.pvicurrent#c.pvicurrent]*`i'^4+_b[_cons] in `=50*`i'+50'
+	}
+	reg demshare c.pvicurrent##c.pvicurrent if state != "PA"
+	gen fakeshare2 = _b[_cons]+_b[pvicurrent]*pvi`altmap'+_b[c.pvicurrent#c.pvicurrent]*pvi`altmap'*pvi`altmap'
+	local quadcons=_b[_cons]
+	local quadlin = _b[pvicurrent]
+	local quadquad = _b[c.pvicurrent#c.pvicurrent]
+	//sort fakeshare2test
+	//graph twoway lfit demshare pvicu if state!="PA", lwidth(vthin) || qfit demshare pvicu if state!="PA", lwidth(vthin) || scatter fakeshare2test pvicu if state!="PA", msize(vsmall) || lowess demshare pvicu if state!="PA", lwidth(vthin) name("fits", replace)
+	forvalues i=-0.2(0.02)0.2{
+		local lin = `lincoef'*`i'+`lincons'
+		local quad = `quadlin'*`i'+`quadquad'*`i'*`i'+`quadcons'
+		local quart = quarticresults[`=50*`i'+50']
+		di "at a PVI of `=50*`i'', the linear model gives `lin'. The quadratic model, on the other hand, gives `quad'. The quartic gives `quart'"
+	}
+	*/
+	
+	
+	local power = "c.pvicurrent"
+	local polycoef = "c.pvicurrent"
+	local genstatement = "_b[_cons]+_b[pvicurrent]*pvi`altmap'"
+	if `order'>1 forvalues a=2/`order' {
+		local power = "`power'##c.pvicurrent"
+		local polycoef = "`polycoef'#c.pvicurrent"
+		local genstatement = "`genstatement'+_b[`polycoef']*pvi`altmap'^`a'"
+	}
+	reg demshare `power' if state != "PA"
+	gen fakeshare = `genstatement'
+	
+	gen fakerepneed = fakeshare
+	gen fakedemneed = 100-fakerepneed
+	/*gen fakedemneed = .
 	gen fakepopv = .
 	forvalues i=1/435{
 		replace fakepopv = max(0,min(100,fakeshare+50-fakeshare[`i']))
 		sum fakepopv [iw=totalvotes], meanonly
 		replace fakedemneed = r(mean) in `i'
 	}
-	gen fakerepneed=100-fakedemneed
+	gen fakerepneed=100-fakedemneed*/
 	
 	sort fakerepneed
 	gen fakerepseats = _n
@@ -200,16 +203,16 @@ foreach altmap of local maps {
 	use `all'
 
 
-	//gen repneed = demshare //Repub would win the seat with >demshare
-	//gen demneed = 100-repneed
-	gen demneed = .
+	gen repneed = demshare
+	gen demneed = 100-repneed
+	/*gen demneed = .
 	gen popv = .
 	forvalues i=1/435{
 		replace popv = max(0,min(100,demshare+50-demshare[`i']))
 		sum popv [iw=totalvotes], meanonly
 		replace demneed = r(mean) in `i'
 	}
-	gen repneed=100-demneed
+	gen repneed=100-demneed*/
 	sort repneed
 	gen repseats = _n
 	sort demneed
@@ -273,19 +276,21 @@ foreach altmap of local maps {
 	replace repneed = 100 if fakedemseats == 0
 	replace demneed = 0 if fakedemseats == 0
 	sort demneed demseats
-	gen down = gotten - 7
-	gen and_tothe_right = popshare2018+1.3
+	gen down = gotten - 8.75
+	gen and_tothe_right = popshare2018+1.25
 	gen left_alittle = popshare2018 - 0.5
 	gen left_alittlemore = popshare2018
 	gen majority = 218
 	
 	local demmarkerloc=3
 	local replabgap=1
-	local demlabsize = "mlabsize(small)"
+	local demlabsize = "mlabsize(*1.03)"
 	if "`altmap'" == "Dem" {
 		gen fakeline = `fakegotten'+(fakedemseats-161)*1.5 if inrange(fakedemseats,161,175)&add==0
 		gen fakelinex = `demgot'+(fakedemseats-161)*0.075 if inrange(fakedemseats,161,175)&add==0
 		local demmarkerloc=1
+		
+		local demlabsize = "mlabsize(*.925)"
 		
 		gen repx = popshare2018-0.25
 		gen repy = wouldvegotten-3.75
@@ -293,17 +298,19 @@ foreach altmap of local maps {
 	if "`altmap'" == "Proportional" {
 		gen fakeline = `fakegotten'+(fakedemseats-161)*0.875 if inrange(fakedemseats,161,175)&add==0
 		gen fakelinex = `demgot'+(fakedemseats-161)*0.225 if inrange(fakedemseats,161,175)&add==0
-		
+
+		local demlabsize = "mlabsize(*.925)"
+
 		local replabgap=.6
 		gen repx = popshare2018
 		gen repy = wouldvegotten
 	}
 	if "`altmap'" == "Compact" {
-		gen fakeline = `fakegotten'+(fakedemseats-161) if inrange(fakedemseats,161,175)&add==0
+		gen fakeline = `fakegotten'+(fakedemseats-161)*1.25 if inrange(fakedemseats,161,175)&add==0
 		gen fakelinex = `demgot'+(fakedemseats-161)*0.23 if inrange(fakedemseats,161,175)&add==0
 			
-		gen repx = popshare2018-0.25
-		gen repy = wouldvegotten+2
+		gen repx = popshare2018-0.1
+		gen repy = wouldvegotten+1.5
 	}
 	if "`altmap'" == "GOP"{
 		gen fakeline = `fakegotten'+(fakedemseats-161)*0.45 if inrange(fakedemseats,161,175)&add==0
@@ -313,23 +320,23 @@ foreach altmap of local maps {
 		gen repy = wouldvegotten
 		local replabgap=.6
 		
-		replace and_tothe_right = popshare2018+0.81
-		replace down = gotten - 8.4
-		local demlabsize = "mlabsize(vsmall)"
+		replace and_tothe_right = popshare2018+0.8
+		replace down = gotten - 9.5
+		local demlabsize = "mlabsize(*.8)"
 	}
 	if "`altmap'" == "Competitive"{
 		gen fakeline = `fakegotten'+(fakedemseats-161)*0.5 if inrange(fakedemseats,161,175)&add==0
 		gen fakelinex = `demgot'+(fakedemseats-161)*0.13 if inrange(fakedemseats,161,175)&add==0
 			
-		gen repx = popshare2018+1.39
-		gen repy = wouldvegotten+8
+		gen repx = popshare2018+1.8
+		gen repy = wouldvegotten+9.5
 	}
 	if "`altmap'" == "algorithmiccompact" {
-		gen fakeline = `fakegotten'+(fakedemseats-161)*1.1 if inrange(fakedemseats,161,175)&add==0
+		gen fakeline = `fakegotten'+(fakedemseats-161)*1.25 if inrange(fakedemseats,161,175)&add==0
 		gen fakelinex = `demgot'+(fakedemseats-161)*0.225 if inrange(fakedemseats,161,175)&add==0
 			
-		gen repx = popshare2018+0.65
-		gen repy = wouldvegotten+10.5
+		gen repx = popshare2018+0.9
+		gen repy = wouldvegotten+12.25
 	}
 	
 	qui sum fakedemneed if fakedemneed>41.6
@@ -414,8 +421,8 @@ foreach altmap of local maps {
 	
 			
 	twoway scatter fakegotten popshare2018, m(none) mcol(gs8) msize(small) || ///
-		connected repseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) mlab(proportionallabel) m(none) mlabpos(11) mlabgap(*.5) mlabcol(gs5) || ///
 		connected majority repneed, lcolor(sand) lwidth(medthin) m(none)|| ///
+		connected repseats proportional, lwidth(medthin) lpattern("shortdash") lcolor(gs5) m(none) || ///
 		line repseats repneed, lcolor("220 34 34*.36") || ///
 		connected demseats demneed, lcolor("22 107 170*.36") m(none)|| ///
 		line fakerepseats fakerepneed, lcolor("220 34 34") || ///
@@ -435,13 +442,59 @@ foreach altmap of local maps {
 		name(`altmap', replace)
 
 		
+	if "`altmap'"=="Compact" {
+	
+		replace fakeline = `fakegotten'+(fakedemseats-161)*0.75 if inrange(fakedemseats,161,175)&add==0
+		replace fakelinex = `demgot'+(fakedemseats-161)*0.175 if inrange(fakedemseats,161,175)&add==0
+			
+		replace repx = popshare2018-0.2
+		replace repy = wouldvegotten+1.5
+		local replabgap=1.25
+		
+		replace and_tothe_right = popshare2018+0.58
+		replace down = gotten - 7
+		
+		qui sum fakedemneed if fakedemneed>46.8&add==0
+		gen fakelab = `"Compact Districts"' if fakedemneed == r(min)&add==0
+		qui sum demneed if demneed>50.3&add==0
+		gen actuallab = `"Actual Districts"' if demneed == r(min)&add==0
+				
+		sum fakeline
+		local liny = r(max)
+		sum fakelinex
+		local linx = r(max)
+
+		twoway scatter fakegotten popshare2018, m(none) mcol(gs8) msize(small) || ///
+		connected majority repneed, lcolor(sand) lwidth(medthin) m(none)|| ///
+		connected repseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) mlab(proportionallabel) m(none) mlabpos(11) mlabgap(*.5) mlabcol(gs5) || ///
+		line repseats repneed, lcolor("220 34 34*.36") || ///
+		connected demseats demneed, lcolor("22 107 170*.36") m(none) mlab(actuallab) mlabpos(4) mlabcolor("22 107 170*.4") mlabgap(*.5) mlabsize(vsmall)|| ///
+		line fakerepseats fakerepneed, lcolor("220 34 34") || ///
+		connected fakedemseats fakedemneed, lcolor("22 107 170") m(none) mlab(fakelab) mlabpos(4) mlabcolor("22 107 170*1.1") mlabgap(*.5) mlabsize(vsmall)|| ///
+		line fakeline fakelinex, lcolor(black) lwidth(vthin) || ///
+		scatteri `liny' `linx' (`demmarkerloc') "`fakegotten'", m(none) mlabsize(small) mlabcol("22 107 170") mlabgap(*0.2) || ///
+		scatter gotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
+		scatter down and_tothe_right, m(none) mlab(gotten) mlabpos(0) mlabsize(small) mlabcol("22 107 170*.6") || ///
+		scatter wouldvegotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
+		scatter repy repx, m(none) mlab(wouldvegotten) mlabpos(10) mlabsize(small) mlabcol("220 34 34*.6") mlabgap(*`replabgap') ///
+		ylab(200 300, labsize(small)) xlab(40 "-20" 50 "0" 60 "+20%  ") ///
+		xtick(#`ticknum') ///
+		ylab(245 "Seats", add custom notick labsize(medsmall) labgap(*7)) ///
+		xtitle("Popular Vote Margin", height(4)) ///
+		title("Compact Districts, Following County Borders", size(medsmall)) plotregion(margin(zero)) graphregion(margin(medium)) ///
+		name("CompacttoExport", replace)
+		
+		graph export graphs/Compact.png, replace
+	}
+	
 	local++counter
 	restore, preserve
 }
 
+
 graph combine `maps', rows(2) title("Seats by Popular Vote Margin", size(medium)) ///
 note("Maps from FiveThirtyEight's Redistricting Atlas", size(*0.65)) ///
-caption("@NathanLazarus3", size(vsmall) j(right) pos(5)) ///
+///caption("@NathanLazarus3", size(vsmall) j(right) pos(5)) ///
 name(combined, replace)
 
 graph export graphs/multigraph.png, replace

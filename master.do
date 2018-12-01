@@ -1,10 +1,11 @@
 //master.do
 
-clear //all
+clear all
 cd ~/GerrymanderingCDFs
-//set scheme uncluttered
+set scheme uncluttered
 //(see https://github.com/graykimbrough/uncluttered-stata-graphs)
-//ssc install _gwtmean
+ssc install _gwtmean
+ssc install cv_regress
 
 import delim data/HousePopularVote.csv, clear
 drop if _n<4
@@ -31,38 +32,79 @@ gen contested_dem = demvotes if demvotes!=0&repvotes!=0
 gen contested_rep = repvotes if demvotes!=0&repvotes!=0
 gen demshare_ifcontested = 100*contested_dem/(contested_dem+contested_rep)
 gen contested = demshare_ifcontested!=.
+
 sum demshare_ifcontested [iw=totalvotes]
 local contested_share = r(mean)
 sum clintonshare if contested==1 [iw=totalvotes]
 local contested_share2016 = r(mean)
 local shift = `contested_share'-`contested_share2016'
 gen demshare = demshare_ifcontested if contested == 1
-replace demshare = clintonshare+`shift' if contested == 0
+
+gen logclintonshare = log(clintonshare/(100-clintonshare))
+local shiftnec = 0
+gen shiftedclintonshare = clintonshare
+sum shiftedclintonshare if contested == 1 [iw=totalvotes]
+local value = -abs(r(mean)-`contested_share')
+forvalues digit=1/15{
+	local digitval = 0
+	forvalues x = 1/9{
+		local try = `shiftnec'+`x'*10^-`digit'
+		di "`x'*10^-`digit'"
+		replace shiftedclintonshare = exp(logclintonshare+`try')/(1+exp(logclintonshare+`try'))*100
+		sum shiftedclintonshare if contested == 1 [iw=totalvotes]
+		local tryvalue = r(mean)-`contested_share'
+		if `tryvalue'>`value'&`tryvalue'<0 local digitval = `x'*10^-`digit'
+		if `tryvalue'>`value'&`tryvalue'<0 local value = `tryvalue'
+	}
+	local shiftnec = `shiftnec'+`digitval'
+}
+
+replace shiftedclintonshare = exp(logclintonshare+`shiftnec')/(1+exp(logclintonshare+`shiftnec'))*100
+sum shiftedclintonshare if contested == 1 [iw=totalvotes]
+replace demshare = shiftedclintonshare if contested == 0
+
+//done dealing with uncontested races!
+
+//testing the assumption of linearity in log odds
+/*
+I'm sure there's some way to do a hypothesis test of linearity in log odds (prediction RMSE?), but it's not what follows.
+I can tell you that the shift from 2016 to 2018 necessary to generate a popular vote swing of 6.5% (shiftnec) is 0.11698 log odds points,
+while the shift observed (shift_obs) was 0.11649, which seems pretty good.
+If it were linear, the average log odds shift would be 0.12173*/
+
+gen logdemshare_ifcontested = log(demshare_ifcontested/(100-demshare_ifcontested))
+sum logdemshare_ifcontested [iw=totalvotes]
+local log_contested_share = r(mean)
+sum logclintonshare if contested == 1 [iw=totalvotes]
+local shift_obs = `log_contested_share'-r(mean)
+
+gen iflin = clintonshare+`shift' if contested == 1
+gen lin_logdemshare_ifcontested = log(iflin/(100-iflin))
+sum lin_logdemshare_ifcontested [iw=totalvotes]
+local lin_log_contested_share = r(mean)
+sum logclintonshare if contested == 1 [iw=totalvotes]
+local shift_lin = `lin_log_contested_share'-r(mean)
+
+di "linear in percentages: `shift_lin', observed: `shift_obs', linear in log odds: `shiftnec'"
+
 
 sum demshare [iw=totalvotes]
-replace demshare=demshare-r(mean)+50
-//di (`r(mean)')-(100*65853625/(65853625+62985106)+`shift') compositional effect
-local marg = r(mean)-50
+global marg = r(mean)-50
 
-sum demean_2016 if contested==1 [iw=totalvotes]
-local fucked = r(mean)
-local whythefuck = `contested_share'-`fucked'
-gen olddemshare = demshare_ifcontested-`whythefuck' if contested == 1
-replace olddemshare = demean_2016 if contested == 0
-//replace demshare = olddemshare
-//local marg = `whythefuck'
+di (`r(mean)')-(100*65853625/(65853625+62985106)+`shift') //compositional effects, 2016-18
+gen logneed = .
+gen logodds = log(demshare/(100-demshare))
+gen prob = .
+forvalues i=1/435{
+	replace prob = exp(logodds-logodds[`i'])/(1+exp(logodds-logodds[`i']))
+	sum prob [iw=totalvotes], meanonly
+	replace logneed = r(mean) in `i'
+}
+replace demshare = 100-logneed*100
 
-/*gen simresults2018 = demshare_ifcontested if contested == 1
-replace simresults2018 = demshare_2016+`shift' if contested == 0
-sum demshare_ifcontested [iw=totalvotes]
-sum voteshare if contested ==1 [iw=totalvotes]
-sum voteshare [iw=totalvotes]
-sum simresults2018 [iw=totalvotes]*/
-
-global marg = `marg'
 preserve
-do code/uncropped.do
+run code/uncropped.do
 restore, preserve
-do code/cropped.do
-restore //, preserve
+run code/cropped.do
+restore, preserve
 do code/multigraph.do
