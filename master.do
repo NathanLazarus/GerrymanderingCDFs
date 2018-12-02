@@ -4,8 +4,8 @@ clear all
 cd ~/GerrymanderingCDFs
 set scheme uncluttered
 //(see https://github.com/graykimbrough/uncluttered-stata-graphs)
-ssc install _gwtmean
-ssc install cv_regress
+//ssc install _gwtmean
+//ssc install cv_regress
 
 import delim data/HousePopularVote.csv, clear
 drop if _n<4
@@ -91,7 +91,7 @@ di "linear in percentages: `shift_lin', observed: `shift_obs', linear in log odd
 sum demshare [iw=totalvotes]
 global marg = r(mean)-50
 
-di (`r(mean)')-(100*65853625/(65853625+62985106)+`shift') //compositional effects, 2016-18
+local compositionaleffect = (`r(mean)')-(100*65853625/(65853625+62985106)+`shift') //compositional effects, 2016-18
 gen logneed = .
 gen logodds = log(demshare/(100-demshare))
 gen prob = .
@@ -106,5 +106,17 @@ preserve
 run code/uncropped.do
 restore, preserve
 run code/cropped.do
-restore, preserve
+restore //, preserve
 do code/multigraph.do
+
+
+#delimit ;
+di `"Stats for w: if the popular vote split 50-50, dems would win $ifeven seats.
+	If Dems won 75-25, they'd lose $dem75 seats.
+	If Reps won 75-25, they'd lose $rep75 seats.
+	Democrats needed to win the popular vote by $demmaj.
+	Democrats would need to win the popular vote by $compactdemmaj if districts were compact.
+	The 2018 electorate was `compositionaleffect' more conservative.
+	I used a $order polynomial to approximate PVI.
+	"';
+	

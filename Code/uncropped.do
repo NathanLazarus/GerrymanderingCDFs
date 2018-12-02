@@ -41,6 +41,17 @@ local repmarg= "-0`repmarg'"
 }
 local demmarg = round(2*`marg',0.1)
 
+sum demneed if demneed<50
+global ifeven = r(N)
+sum demneed if demneed<75
+global dem75 = 435-r(N)
+sum repneed if repneed<75
+global rep75 = 435-r(N)
+list if demseats == 218
+sum demneed if demseats == 218
+global demmaj = round(r(mean),0.001)
+
+
 expand 2, gen(add)
 replace demseats=demseats-add
 replace repseats=repseats-(1-add)
@@ -87,9 +98,9 @@ twoway connected majority repneed, lcolor(sand) lwidth(medthin) mlab(majoritylab
 	xtick(0(12.5)100) ///
 	ytitle("Seats", height(-8) orientation(horizontal) size(small)) xtitle("Popular Vote Margin", height(7)) ///
 	title("Seats by Popular Vote Margin") plotregion(margin(zero)) graphregion(margin(medlarge)) ///
-	note("Democrats won `gotten' seats with a popular vote margin of `demmarg'%.""Republicans could've won `gotten' seats with just `repmarg'%.""With `demmarg'%, Republicans would've won `wouldvegotten'.", size(vsmall) span) ///
+	///note("Democrats won `gotten' seats with a popular vote margin of `demmarg'%.""Republicans could've won `gotten' seats with just `repmarg'%.""With `demmarg'%, Republicans would've won `wouldvegotten'.", size(vsmall) span) ///
 	///caption("@NathanLazarus3", size(vsmall) j(right) pos(5) ring(3)) ///
 	name(Uncropped, replace)
 
 	
-graph export graphs/Uncropped.png, replace	
+graph export graphs/Uncropped.png, replace

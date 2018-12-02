@@ -122,14 +122,13 @@ foreach altmap of local maps {
 	merge 1:1 uniqueid using `results', nogen
 
 	reg demshare pvicurrent if state!="PA"
-	cv_regress //uses leave one out cross validation to select the degree of polynomial, up to order 8
-	//It's been picking 1 or 6 since the switch to log odds.
+	cv_regress //uses leave one out cross validation to select the degree of polynomial, up to order 4
 	//The relationship between PVI and log odds is almost perfectly linear, so this matters a lot less than when the shifts were linear.
-	//With linear shifts, it looked like dems were underperforming in the most democratic areas—why weren't they shifting by 3 points like everywhere else?
+	//With linear shifts, it looked like dems were underperforming in the most and least democratic areas—why weren't they shifting by 3 points like everywhere else?
 	local rmse = r(rmse)
 	local order = 1
 	local command = "c.pvicurrent##c.pvicurrent"
-	forvalues x=2/8 {
+	forvalues x=2/4 {
 		reg demshare `command' if state!="PA"
 		cv_regress
 		if `r(rmse)'<`rmse' local order = `x'
@@ -137,6 +136,7 @@ foreach altmap of local maps {
 		local command = "`command'##c.pvicurrent"
 	}
 	
+	global order = `order'
 	
 	replace pvicurrent = pvicurrent/50 //helps with orthoganalization, also just more logical units
 	replace pvi`altmap'=pvi`altmap'/50 
@@ -190,6 +190,37 @@ foreach altmap of local maps {
 	}
 	gen fakerepneed=100-fakedemneed*/
 	
+	if "`altmap'" == "algorithmiccompact"|"`altmap'"=="Compact"{
+		tempfile everything
+		save `everything'
+		gen `altmap'win2018 = fakedemneed<(`marg'+50)
+		tempfile `altmap'stateresults
+		collapse (sum) `altmap'win2018, by(v1)
+		save ``altmap'stateresults'
+		use `everything'
+	}
+	
+	
+	if "`counter'" == "1"{
+		//get outcome under current districts, but comparing apples to apples by using their PVI instead of actual results
+		local polycoef = "c.pvicurrent"
+		local genstatement = "_b[_cons]+_b[pvicurrent]*pvicurrent"
+		if `order'>1 forvalues a=2/`order' {
+			local polycoef = "`polycoef'#c.pvicurrent"
+			local genstatement = "`genstatement'+_b[`polycoef']*pvi`altmap'^`a'"
+		}
+		gen currentshare = `genstatement'
+		gen currentrepneed = currentshare
+		gen currentdemneed = 100-currentrepneed
+		tempfile everything2
+		save `everything2'
+		gen win2018 = currentdemneed<(`marg'+50)
+		tempfile stateresults
+		collapse (sum) win2018, by(v1)
+		save `stateresults'
+		use `everything2'
+	}
+	
 	sort fakerepneed
 	gen fakerepseats = _n
 	sort fakedemneed
@@ -204,7 +235,7 @@ foreach altmap of local maps {
 
 
 	gen repneed = demshare
-	gen demneed = 100-repneed
+	gen demneed = 100-repneed	
 	/*gen demneed = .
 	gen popv = .
 	forvalues i=1/435{
@@ -213,6 +244,17 @@ foreach altmap of local maps {
 		replace demneed = r(mean) in `i'
 	}
 	gen repneed=100-demneed*/
+	
+	if "`altmap'" == "algorithmiccompact"{
+		tempfile everything3
+		save `everything3'
+		gen actualwin2018 = demneed<(`marg'+50)
+		tempfile actualstateresults
+		collapse (sum) actualwin2018, by(v1)
+		save `actualstateresults'
+		use `everything3'
+	}
+	
 	sort repneed
 	gen repseats = _n
 	sort demneed
@@ -243,6 +285,11 @@ foreach altmap of local maps {
 	replace fakewouldvegotten = .
 	replace fakewouldvegotten = r(sum) in 1
 	
+	
+	if "`altmap'" == "Compact" {
+		sum fakedemneed if fakedemseats == 218
+		global compactdemmaj = round(r(mean),0.001)
+	}
 	
 	expand 2, gen(add)
 	replace demseats=demseats-add
@@ -306,8 +353,8 @@ foreach altmap of local maps {
 		gen repy = wouldvegotten
 	}
 	if "`altmap'" == "Compact" {
-		gen fakeline = `fakegotten'+(fakedemseats-161)*1.25 if inrange(fakedemseats,161,175)&add==0
-		gen fakelinex = `demgot'+(fakedemseats-161)*0.23 if inrange(fakedemseats,161,175)&add==0
+		gen fakeline = `fakegotten'+(fakedemseats-161)*0.95 if inrange(fakedemseats,161,175)&add==0
+		gen fakelinex = `demgot'+(fakedemseats-161)*0.2 if inrange(fakedemseats,161,175)&add==0
 			
 		gen repx = popshare2018-0.1
 		gen repy = wouldvegotten+1.5
@@ -320,7 +367,7 @@ foreach altmap of local maps {
 		gen repy = wouldvegotten
 		local replabgap=.6
 		
-		replace and_tothe_right = popshare2018+0.8
+		replace and_tothe_right = popshare2018+0.65
 		replace down = gotten - 9.5
 		local demlabsize = "mlabsize(*.8)"
 	}
@@ -328,12 +375,12 @@ foreach altmap of local maps {
 		gen fakeline = `fakegotten'+(fakedemseats-161)*0.5 if inrange(fakedemseats,161,175)&add==0
 		gen fakelinex = `demgot'+(fakedemseats-161)*0.13 if inrange(fakedemseats,161,175)&add==0
 			
-		gen repx = popshare2018+1.8
+		gen repx = popshare2018+1.675
 		gen repy = wouldvegotten+9.5
 	}
 	if "`altmap'" == "algorithmiccompact" {
-		gen fakeline = `fakegotten'+(fakedemseats-161)*1.25 if inrange(fakedemseats,161,175)&add==0
-		gen fakelinex = `demgot'+(fakedemseats-161)*0.225 if inrange(fakedemseats,161,175)&add==0
+		gen fakeline = `fakegotten'+(fakedemseats-161)*0.95 if inrange(fakedemseats,161,175)&add==0
+		gen fakelinex = `demgot'+(fakedemseats-161)*0.205 if inrange(fakedemseats,161,175)&add==0
 			
 		gen repx = popshare2018+0.9
 		gen repy = wouldvegotten+12.25
@@ -482,7 +529,7 @@ foreach altmap of local maps {
 		ylab(245 "Seats", add custom notick labsize(medsmall) labgap(*7)) ///
 		xtitle("Popular Vote Margin", height(4)) ///
 		title("Compact Districts, Following County Borders", size(medsmall)) plotregion(margin(zero)) graphregion(margin(medium)) ///
-		name("CompacttoExport", replace)
+		name(CompacttoExport, replace)
 		
 		graph export graphs/Compact.png, replace
 	}
@@ -498,3 +545,36 @@ note("Maps from FiveThirtyEight's Redistricting Atlas", size(*0.65)) ///
 name(combined, replace)
 
 graph export graphs/multigraph.png, replace
+
+gen fuck = "this"
+restore
+clear
+use `stateresults'
+merge 1:1 v1 using `algorithmiccompactstateresults', nogen
+merge 1:1 v1 using `Compactstateresults', nogen
+merge 1:1 v1 using `actualstateresults', nogen
+replace win2018 = win2018+1 if v1=="Utah"|v1=="Pennsylvania"|v1=="South Carolina"
+//this is the worst thing I've had to do, and I really wish I had the geographic data right now.
+//PVI makes pretty accurate predictions: it's off by 14 districts in 13 states (and 538 has the old PA districts).
+//But it thinks a Democrat shouldn't have won in Oklahoma. If I use the actual results, then, Oklahoma is "gerrymandered" for Democrats.
+//That's clearly wrong, so I'm using the districts' PVI to guess the results. But it gives Democrats 232 seats, and says, for example,
+//that Democrats "should" get a seat in Utah. But they did!
+gen compactdiff = win2018-Compactwin2018
+gen algorithmiccompactdiff = win2018-algorithmiccompactwin2018
+
+keep if compactdiff!=0|algorithmiccompactdiff!=0
+sort compactdiff algorithmiccompactdiff
+separate compactdiff, by(compactdiff<0)
+separate algorithmiccompactdiff, by(algorithmiccompactdiff<0)
+replace compactdiff1 = abs(compactdiff1)
+replace algorithmiccompactdiff1 = abs(algorithmiccompactdiff1)
+gen state = _n
+labmask state, val(v1)
+graph hbar compactdiff0 compactdiff1 algorithmiccompactdiff0 algorithmiccompactdiff1, over(state, label(labsize(vsmall)) gap(*2)) ///
+	bar(1, color("22 107 170*1.1")) bar(3, color("22 107 170*.36")) bar(2, color("220 34 34*1.1"))  bar(4, color("220 34 34*.36")) ///
+	bargap(0) nofill ysc(range(0,1)) ylab(0 2 4) ytitle("Seats", orientation(horizontal)) ///
+	plotregion(margin(zero)) graphregion(margin(medium)) ///
+	legend(on order(2 "County" "Borders" 4 "Ignore" "County" "Borders") ring(0) cols(1) pos(3) symxsize(*0.5) symysize(*0.5) region(lwidth(none)) size(small)) ///
+	name(stategerrymander, replace)
+
+graph export graphs/stategerrymander.png, replace
