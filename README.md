@@ -8,7 +8,7 @@ Updated House vote totals from [Dave Wasserman](https://twitter.com/Redistrict)'
 
 Alternative maps from FiveThirtyEight's [Redistricting Atlas](https://github.com/fivethirtyeight/redistricting-atlas-data).
 
-Stata graphs based on Gray Kimbrough's scheme ["Uncluttered"](https://github.com/graykimbrough/uncluttered-stata-graphs).
+Stata graphs require Gray Kimbrough's scheme ["Uncluttered"](https://github.com/graykimbrough/uncluttered-stata-graphs).
 
 ## License
 
