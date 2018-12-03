@@ -491,8 +491,8 @@ foreach altmap of local maps {
 		
 	if "`altmap'"=="Compact" {
 	
-		replace fakeline = `fakegotten'+(fakedemseats-161)*0.75 if inrange(fakedemseats,161,175)&add==0
-		replace fakelinex = `demgot'+(fakedemseats-161)*0.175 if inrange(fakedemseats,161,175)&add==0
+		replace fakeline = `fakegotten'+(fakedemseats-161)*0.73 if inrange(fakedemseats,161,175)&add==0
+		replace fakelinex = `demgot'+(fakedemseats-161)*0.19 if inrange(fakedemseats,161,175)&add==0
 			
 		replace repx = popshare2018-0.2
 		replace repy = wouldvegotten+1.5

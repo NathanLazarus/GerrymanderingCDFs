@@ -104,3 +104,5 @@ twoway connected majority repneed, lcolor(sand) lwidth(medthin) mlab(majoritylab
 
 	
 graph export graphs/Uncropped.png, replace
+
+global note = "Democrats won `gotten' seats with a popular vote margin of `demmarg'%. Republicans could've won `gotten' seats with just `repmarg'%. With `demmarg'%, Republicans would've won `wouldvegotten'."

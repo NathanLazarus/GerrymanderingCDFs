@@ -117,6 +117,7 @@ di `"Stats for w: if the popular vote split 50-50, dems would win $ifeven seats.
 	Democrats needed to win the popular vote by $demmaj.
 	Democrats would need to win the popular vote by $compactdemmaj if districts were compact.
 	The 2018 electorate was `compositionaleffect' more conservative.
-	I used a $order polynomial to approximate PVI.
+	I used a polynomial of $order order to approximate vote shares based on PVI.
+	$note
 	"';
 	
