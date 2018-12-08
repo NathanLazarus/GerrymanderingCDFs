@@ -22,6 +22,11 @@ destring v7, gen(repvotes) ignore(",")
 destring v8, gen(othervotes) ignore(",")
 
 //this part deals with the uncontested races
+
+replace repvotes = 0 if v4=="Ruben Gallego"
+replace margin = 100 if v4=="Ruben Gallego"
+replace voteshare = 100 if v4=="Ruben Gallego" //with apologies to the write in campaign of James "007" Bond IV
+
 destring v15, gen(votes2016) ignore(",")
 destring v16, gen(votes_vs2016) percent
 gen totalvotes = demvotes+repvotes
@@ -106,10 +111,10 @@ preserve
 run code/uncropped.do
 restore, preserve
 run code/cropped.do
-restore //, preserve
-do code/multigraph.do
+restore, preserve
+run code/multigraph.do
 
-
+//add number of uncontested races to the output here.
 #delimit ;
 di `"Stats for w: if the popular vote split 50-50, dems would win $ifeven seats.
 	If Dems won 75-25, they'd lose $dem75 seats.

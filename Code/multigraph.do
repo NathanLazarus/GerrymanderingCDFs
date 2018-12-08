@@ -331,7 +331,7 @@ foreach altmap of local maps {
 	
 	local demmarkerloc=3
 	local replabgap=1
-	local demlabsize = "mlabsize(*1.03)"
+	local demlabsize = "mlabsize(*0.975)"
 	if "`altmap'" == "Dem" {
 		gen fakeline = `fakegotten'+(fakedemseats-161)*1.5 if inrange(fakedemseats,161,175)&add==0
 		gen fakelinex = `demgot'+(fakedemseats-161)*0.075 if inrange(fakedemseats,161,175)&add==0
@@ -491,8 +491,8 @@ foreach altmap of local maps {
 		
 	if "`altmap'"=="Compact" {
 	
-		replace fakeline = `fakegotten'+(fakedemseats-161)*0.73 if inrange(fakedemseats,161,175)&add==0
-		replace fakelinex = `demgot'+(fakedemseats-161)*0.19 if inrange(fakedemseats,161,175)&add==0
+		replace fakeline = `fakegotten'+(fakedemseats-161)*0.7 if inrange(fakedemseats,161,175)&add==0
+		replace fakelinex = `demgot'+(fakedemseats-161)*0.18 if inrange(fakedemseats,161,175)&add==0
 			
 		replace repx = popshare2018-0.2
 		replace repy = wouldvegotten+1.5
