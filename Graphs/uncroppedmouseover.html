@@ -437,7 +437,7 @@
     //.append('g');
     //.attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-  d3.csv("lines.csv", type, (error, data) => {
+  d3.csv("/lines.csv", type, (error, data) => {
     if (error) throw error;
 
     y.domain([Math.min(d3.min(data, d => d.demseats),d3.min(data, d => d.repseats))-1,
