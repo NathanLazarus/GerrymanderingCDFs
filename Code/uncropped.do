@@ -94,39 +94,33 @@ use `stuff'
 keep repseats repneed
 sort repneed repseats
 merge 1:1 _n using `demlines', nogen
-export delim graphs/lines.csv, replace
-/*clear
-set obs 1
-gen axismin = 0
-gen axismax = 435
-export delim graphs/axislimits.csv, replace*/
+export delim graphs/uncroppedlines.csv, replace
 clear
 use `stuff'
 
 twoway connected majority repneed, lcolor(sand) lwidth(medthin) mlab(majoritylabel) m(none) mlabpos(2) mlabgap(*2.05) mlabcol("219 112 41") || ///
 	connected repseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) mlab(proportionallabel) m(none) mlabpos(11) mlabgap(*.5) mlabcol(gs5) || ///
-	connected repseats repneed, lcolor("220 34 34") m(none) mlab(replab) mlabpos(3) mlabcolor("220 34 34*1.1") mlabgap(*1.8) mlabsize(vsmall) || ///
-	connected demseats demneed, lcolor("22 107 170") m(none) mlab(demlab) mlabpos(9) mlabcolor("22 107 170*1.1") mlabgap(*3.5) mlabsize(vsmall) || ///
+	connected repseats repneed, lcolor("220 34 34") m(none) mlab(replab) mlabpos(3) mlabcolor("220 34 34*1.1") mlabgap(*2) mlabsize(*.9) || ///
+	connected demseats demneed, lcolor("22 107 170") m(none) mlab(demlab) mlabpos(9) mlabcolor("22 107 170*1.1") mlabgap(*3) mlabsize(*.9) || ///
 	scatter gotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
 	scatter down and_tothe_right, m(none) mlab(gotten) mlabpos(0) mlabsize(small) mlabcol("22 107 170") || ///
 	scatter wouldvegotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
 	scatter wouldvegotten left_alittle, m(none) mlab(wouldvegotten) mlabpos(11) mlabsize(small) mlabcol("220 34 34") mlabgap(*.6) ///
-	yscale(range(-20,440) titlegap(*-6)) ylab(0(100)400, labsize(small)) ytick(435, add custom nolab tlcolor(white)) xlab(0 "-100" 25 "-50" 50 "0" 75 "50" 100 "100%") ///
+	yscale(titlegap(*-6)) ylab(100(100)400, labsize(small)) ytick(435, add custom nolab tlcolor(white)) xlab(0 "-100" 25 "-50" 50 "0" 75 "50" 100 "100%") ///
 	xtick(0(12.5)100) ///
 	ytitle("Seats", height(-8) orientation(horizontal) size(small)) xtitle("Popular Vote Margin", height(7)) ///
-	title("Seats by Popular Vote Margin") plotregion(margin(zero)) graphregion(margin(medlarge)) ///
+	title("Seats by Popular Vote Margin") plotregion(margin(zero)) graphregion(margin(0 5 3 5)) ///
 	///note("Democrats won `gotten' seats with a popular vote margin of `demmarg'%.""Republicans could've won `gotten' seats with just `repmarg'%.""With `demmarg'%, Republicans would've won `wouldvegotten'.", size(vsmall) span) ///
 	///caption("@NathanLazarus3", size(vsmall) j(right) pos(5) ring(3)) ///
 	name(Uncropped, replace)
 
 graph export graphs/Uncropped.png, replace
 
-	
 twoway /*connected majority repneed, lcolor(sand) lwidth(medthin) mlab(majoritylabel) m(none) mlabpos(2) mlabgap(*2.05) mlabcol("219 112 41") ||*/ ///
 	scatter majority repneed, m(none) mlab(majoritylabel) mlabpos(2) mlabgap(*2.05) mlabcol("219 112 41") yline(218, lcolor(sand)) || ///
 	connected repseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) mlab(proportionallabel) m(none) mlabpos(11) mlabgap(*.5) mlabcol(gs5) || ///
-	scatter repseats repneed, m(none) mlab(replab) mlabpos(3) mlabcolor("220 34 34*1.1") mlabgap(*1.8) mlabsize(vsmall) || ///
-	scatter demseats demneed, m(none) mlab(demlab) mlabpos(9) mlabcolor("22 107 170*1.1") mlabgap(*3.5) mlabsize(vsmall) || ///
+	scatter repseats repneed, m(none) mlab(replab) mlabpos(3) mlabcolor("220 34 34*1.1") mlabgap(*2) mlabsize(*.9) || ///
+	scatter demseats demneed, m(none) mlab(demlab) mlabpos(9) mlabcolor("22 107 170*1.1") mlabgap(*3) mlabsize(*.9) || ///
 	scatter gotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
 	scatter down and_tothe_right, m(none) mlab(gotten) mlabpos(0) mlabsize(small) mlabcol("22 107 170") || ///
 	scatter wouldvegotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
@@ -134,7 +128,7 @@ twoway /*connected majority repneed, lcolor(sand) lwidth(medthin) mlab(majorityl
 	yscale(range(-20,440) titlegap(*-6)) ylab(0(100)400, labsize(small)) ytick(435, add custom nolab tlcolor(white)) xlab(0 "-100" 25 "-50" 50 "0" 75 "50" 100 "100%") ///
 	xtick(0(12.5)100) ///
 	ytitle("Seats", height(-8) orientation(horizontal) size(small)) xtitle("Popular Vote Margin", height(7)) ///
-	/*title("Seats by Popular Vote Margin")*/ plotregion(margin(zero)) graphregion(margin(medlarge)) ///
+	/*title("Seats by Popular Vote Margin")*/ plotregion(margin(zero)) graphregion(margin(0 5 0 2)) ///
 	///note("Democrats won `gotten' seats with a popular vote margin of `demmarg'%.""Republicans could've won `gotten' seats with just `repmarg'%.""With `demmarg'%, Republicans would've won `wouldvegotten'.", size(vsmall) span) ///
 	///caption("@NathanLazarus3", size(vsmall) j(right) pos(5) ring(3)) ///
 	name(Uncropped, replace)
