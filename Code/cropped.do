@@ -135,13 +135,21 @@ graph export graphs/Cropped.png, replace
 tempfile stuff  demlines
 save `stuff'
 keep demseats demneed
-keep if demseats!=.
+keep if demseats != .
 save `demlines'
 use `stuff'
 keep repseats repneed
-keep if repseats!=.
 sort repneed repseats
+keep if repseats != .
 merge 1:1 _n using `demlines', nogen
+sum repseats
+replace repseats = r(max) if repseats == .
+sum repneed
+replace repneed = r(max) if repneed == .
+sum demseats
+replace demseats = r(max) if demseats == .
+sum demneed
+replace repneed = r(max) if repneed == .
 export delim graphs/croppedlines.csv, replace
 clear
 use `stuff'
@@ -151,9 +159,7 @@ local min = r(min)
 local max = r(max)
 sum demseats
 local min = min(`min',r(min))
-local axismin = `min'-10
-local max = min(`max',r(max))
-local axismax = `max'+3
+local max = max(`max',r(max))
 
 twoway ///connected majority repneed, lcolor(sand) lwidth(medthin) mlabsize(small) m(none)|| ///
 	connected proportionalseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) m(none) yline(218, lcolor(sand)) || ///
@@ -163,7 +169,7 @@ twoway ///connected majority repneed, lcolor(sand) lwidth(medthin) mlabsize(smal
 	scatter down and_tothe_right, m(none) mlab(gotten) mlabpos(0) mlabsize(small) mlabcol("22 107 170") || ///
 	scatter wouldvegotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
 	scatter wouldvegotten left_alittle, m(none) mlab(wouldvegotten) mlabpos(12) mlabsize(small) mlabcol("220 34 34") mlabgap(*.9) ///
-	yscale(range(`axismin',`axismax') titlegap(*-6)) ylab(200 300, labsize(small)) ytick(`min' `max', add custom nolab tlcolor(white)) xlab(40 "-20" 50 "0" 60 "+20%") ///
+	yscale(range($axismin,$axismax) titlegap(*-6)) ylab(100 200 300, labsize(small)) ytick(`min' `max', add custom nolab tlcolor(lime)) xlab(40 "-20" 50 "0" 60 "+20%") ///
 	xtick(#`ticknum') ///
 	ytitle("Seats", height(-8) orientation(horizontal) size(small)) xtitle("Popular Vote Margin", height(5)) ///
 	/*title("Seats by Popular Vote Margin")*/ plotregion(margin(zero)) graphregion(margin(0 5 0 2)) ///

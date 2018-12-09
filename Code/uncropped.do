@@ -125,7 +125,7 @@ twoway /*connected majority repneed, lcolor(sand) lwidth(medthin) mlab(majorityl
 	scatter down and_tothe_right, m(none) mlab(gotten) mlabpos(0) mlabsize(small) mlabcol("22 107 170") || ///
 	scatter wouldvegotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
 	scatter wouldvegotten left_alittle, m(none) mlab(wouldvegotten) mlabpos(11) mlabsize(small) mlabcol("220 34 34") mlabgap(*.6) ///
-	yscale(range(-20,440) titlegap(*-6)) ylab(0(100)400, labsize(small)) ytick(435, add custom nolab tlcolor(white)) xlab(0 "-100" 25 "-50" 50 "0" 75 "50" 100 "100%") ///
+	yscale(range(-20,440) titlegap(*-6)) ylab(0(100)400, labsize(small)) ytick(435, add custom nolab tlcolor(lime)) xlab(0 "-100" 25 "-50" 50 "0" 75 "50" 100 "100%") ///
 	xtick(0(12.5)100) ///
 	ytitle("Seats", height(-8) orientation(horizontal) size(small)) xtitle("Popular Vote Margin", height(7)) ///
 	/*title("Seats by Popular Vote Margin")*/ plotregion(margin(zero)) graphregion(margin(0 5 0 2)) ///

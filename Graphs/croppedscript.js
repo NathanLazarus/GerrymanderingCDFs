@@ -40,11 +40,11 @@ d3.csv("/croppedlines.csv", type, (error, data) => {
   y.domain(ylims)
 
     
-  const focusline = svg.append('g')
-    .attr('class', 'focus')
+  const focusline2 = svg.append('g')
+    .attr('class', 'focus2')
     .style('display', 'none');
 
-  focusline.append('line')
+  focusline2.append('line')
     .classed('y', true)
     .styles({
       fill: 'none',
@@ -65,8 +65,12 @@ d3.csv("/croppedlines.csv", type, (error, data) => {
     .attr("d", demline)
     .attr("stroke", "rgb(22 107 170)");
 
-  const focus = svg.append('g')
-    .attr('class', 'focus')
+
+  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2676.71" y1="1055.87" x2="2676.71" y2="1019.98" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
+  '<line x1="2676.71" y1="804.52" x2="2676.71" y2="768.64" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>');
+
+  const focus2 = svg.append('g')
+    .attr('class', 'focus2')
     .style('display', 'none');
 
   d3.selectAll('.line')
@@ -94,10 +98,10 @@ d3.csv("/croppedlines.csv", type, (error, data) => {
   const text_y_pad = rect_y + newsize(53)
   const small_gap = newsize(54)
   const big_gap = newsize(59)
-  const xvaloffset = 1.2*64
+  const xvaloffset = 1.2*78
 
 
-  focus.append('rect')
+  focus2.append('rect')
     .attr('class', 'notflipped')
     .attr('width', rectwidth)
     .attr('height', rectheight)
@@ -106,39 +110,39 @@ d3.csv("/croppedlines.csv", type, (error, data) => {
     .attr('rx', rectround)
     .style('fill', rectcolor);
 
-  focus.append('polygon')
+  focus2.append('polygon')
     .attr('class', 'notflipped')
     .attr('points', triangle)
     .style('stroke', rectcolor)
     .style('fill', rectcolor);
 
-  focus.append('text')
+  focus2.append('text')
     .attr('class','demlab notflipped')
     .attr('x', text_x_pad)
     .attr('y', text_y_pad);
 
-  focus.append('text')
+  focus2.append('text')
     .attr('class','demval notflipped')
     .attr('x', text_x_pad)
     .attr('y', text_y_pad+small_gap);
 
-  focus.append('text')
+  focus2.append('text')
     .attr('class','replab notflipped')
     .attr('x', text_x_pad)
     .attr('y', text_y_pad+small_gap+big_gap);
 
-  focus.append('text')
+  focus2.append('text')
     .attr('class','repval notflipped')
     .attr('x', text_x_pad)
     .attr('y', text_y_pad+small_gap+big_gap+small_gap);
 
-    focus.append('text')
+    focus2.append('text')
     .attr('class','xval')
     .attr('x', 0)
     .attr('y', height-tooltipheight+xvaloffset)
     .attr('alignment-baseline', 'baseline');
 
-  focus.append('rect')
+  focus2.append('rect')
     .attr('class', 'flipped')
     .attr('width', rectwidth)
     .attr('height', rectheight)
@@ -147,33 +151,33 @@ d3.csv("/croppedlines.csv", type, (error, data) => {
     .attr('rx', rectround)
     .style('fill', rectcolor);
 
-  focus.append('polygon')
+  focus2.append('polygon')
     .attr('points', fliptriangle)
     .attr('class', 'flipped')
     .style('stroke', rectcolor)
     .style('fill', rectcolor);
 
-  focus.append('text')
+  focus2.append('text')
     .attr('class','demlab flipped')
     .attr('x', -rectwidth-2*rect_x+text_x_pad)
     .attr('y', text_y_pad);
 
-  focus.append('text')
+  focus2.append('text')
     .attr('class','demval flipped')
     .attr('x', -rectwidth-2*rect_x+text_x_pad)
     .attr('y', text_y_pad+small_gap);
 
-  focus.append('text')
+  focus2.append('text')
     .attr('class','replab flipped')
     .attr('x', -rectwidth-2*rect_x+text_x_pad)
     .attr('y', text_y_pad+small_gap+big_gap);
 
-  focus.append('text')
+  focus2.append('text')
     .attr('class','repval flipped')
     .attr('x', -rectwidth-2*rect_x+text_x_pad)
     .attr('y', text_y_pad+small_gap+big_gap+small_gap);
 
-  const focuses = d3.selectAll('.focus')
+  const focuses = d3.selectAll('.focus2')
 
   svg.append('rect')
     .attr('class', 'overlay')
@@ -181,15 +185,13 @@ d3.csv("/croppedlines.csv", type, (error, data) => {
     .attr('height', height)
     .on('mouseover', () => focuses.style('display', null))
     .on('mouseout', () => focuses.style('display', 'none'))
-    .on('mousemove', mousemove);
-
-  d3.select('.overlay')
+    .on('mousemove', mousemove)
     .styles({
       fill: 'none',
       'pointer-events': 'all'
     });
 
-  /*d3.selectAll('.focus line')
+  /*d3.selectAll('.focus2 line')
     .styles({
       fill: 'none',
       'stroke': '#888',
@@ -205,7 +207,7 @@ d3.csv("/croppedlines.csv", type, (error, data) => {
     const dem = data[i];
     focuses.attr('transform', `translate(${(x0-xlims[0])*width/(xlims[1]-xlims[0])}, ${tooltipheight})`);
 
-    focusline.select('line.y')
+    focusline2.select('line.y')
       .attr('x1', 0)
       .attr('x2', 0)
       .attr('y1', -tooltipheight)
@@ -214,25 +216,24 @@ d3.csv("/croppedlines.csv", type, (error, data) => {
     const xvalheight = 38*1.7;
     const labheight = 27.5*1.7;
     const yvalheight = 32*1.7;
-    console.log(x0)
 
 
-    focus.selectAll('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
+    focus2.selectAll('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
       .attr('x', Math.max(Math.min(0,(97.5*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(3*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
 
-    focus.selectAll('.demlab').text("Democrats:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');
-    focus.selectAll('.demval').text(dem.demseats).style('text-anchor', 'left').style('font', newsize(yvalheight)+'px sans-serif').style('fill','#FFFFFF');
-    focus.selectAll('.replab').text("Republicans:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');
-    focus.selectAll('.repval').text(rep.repseats).style('text-anchor', 'left').style('font', newsize(yvalheight)+'px sans-serif').style('fill','#FFFFFF');
+    focus2.selectAll('.demlab').text("Democrats:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');
+    focus2.selectAll('.demval').text(dem.demseats).style('text-anchor', 'left').style('font', newsize(yvalheight)+'px sans-serif').style('fill','#FFFFFF');
+    focus2.selectAll('.replab').text("Republicans:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');
+    focus2.selectAll('.repval').text(rep.repseats).style('text-anchor', 'left').style('font', newsize(yvalheight)+'px sans-serif').style('fill','#FFFFFF');
     if((x0-xlims[0])*width/(xlims[1]-xlims[0])+rect_x+rectwidth<width){
-      focus.selectAll('.flipped').style('visibility', 'hidden')
-      focus.selectAll('.notflipped').style('visibility', 'visible')
+      focus2.selectAll('.flipped').style('visibility', 'hidden')
+      focus2.selectAll('.notflipped').style('visibility', 'visible')
     }
     if((x0-xlims[0])*width/(xlims[1]-xlims[0])+rect_x+rectwidth>=width){
-      focus.selectAll('.notflipped').style('visibility', 'hidden')
-      focus.selectAll('.flipped').style('visibility', 'visible')
+      focus2.selectAll('.notflipped').style('visibility', 'hidden')
+      focus2.selectAll('.flipped').style('visibility', 'visible')
     }
-  
+
   }
 });
 
@@ -243,6 +244,3 @@ function type(d) {
   d.repseats = +d.repseats;
   return d;
 }
-
-d3.select('#cropped').append('svg').html('<line x1="2676.71" y1="1055.87" x2="2676.71" y2="1019.98" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>');
-d3.select('#cropped').append('svg').html('<line x1="2676.71" y1="804.52" x2="2676.71" y2="768.64" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>');

@@ -467,7 +467,7 @@ foreach altmap of local maps {
 	
 	
 			
-	twoway scatter fakegotten popshare2018, m(none) mcol(gs8) msize(small) || ///
+	twoway /// scatter fakegotten popshare2018, m(none) mcol(gs8) msize(small) || ///
 		connected majority repneed, lcolor(sand) lwidth(medthin) m(none)|| ///
 		connected repseats proportional, lwidth(medthin) lpattern("shortdash") lcolor(gs5) m(none) || ///
 		line repseats repneed, lcolor("220 34 34*.36") || ///
@@ -532,6 +532,87 @@ foreach altmap of local maps {
 		name(CompacttoExport, replace)
 		
 		graph export graphs/Compact.png, replace
+		
+		
+		tempfile stuff demlines
+		save `stuff'
+		keep fakedemseats fakedemneed
+		keep if fakedemseats!=.
+		save `demlines'
+		use `stuff'
+		keep fakerepseats fakerepneed
+		sort fakerepneed fakerepseats
+		keep if fakerepseats!=.
+		merge 1:1 _n using `demlines', nogen
+		sum fakerepseats
+		replace fakerepseats = r(max) if fakerepseats == .
+		sum fakerepneed
+		replace fakerepneed = r(max) if fakerepneed == .
+		sum fakedemseats
+		replace fakedemseats = r(max) if fakedemseats == .
+		sum fakedemneed
+		replace fakerepneed = r(max) if fakerepneed == .		
+		rename fake* *
+		export delim graphs/compactlines.csv, replace
+		clear
+		use `stuff'
+
+		sum repseats
+		local min = r(min)
+		local max = r(max)
+		sum demseats
+		local min = min(`min',r(min))
+		local max = max(`max',r(max))
+		sum fakerepseats
+		local min = min(`min',r(min))
+		local max = max(`max',r(max))
+		sum fakedemseats
+		local min = min(`min',r(min))
+		local max = max(`max',r(max))
+		global axismin = `min'-8
+		global axismax = `max'+3
+
+/*twoway ///connected majority repneed, lcolor(sand) lwidth(medthin) mlabsize(small) m(none)|| ///
+	connected proportionalseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) m(none) yline(218, lcolor(sand)) || ///
+	///connected repseats repneed, lcolor("220 34 34") lwidth(medthick) m(none) mlab(replab) mlabpos(10) mlabcolor("220 34 34*1.1") mlabgap(*.9) mlabsize(vsmall) || ///
+	///connected demseats demneed, lcolor("22 107 170") lwidth(medthick) m(none) mlab(demlab) mlabpos(3) mlabcolor("22 107 170*1.1") mlabgap(*3) mlabsize(vsmall) || ///
+	scatter gotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
+	scatter down and_tothe_right, m(none) mlab(gotten) mlabpos(0) mlabsize(small) mlabcol("22 107 170") || ///
+	scatter wouldvegotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
+	scatter wouldvegotten left_alittle, m(none) mlab(wouldvegotten) mlabpos(12) mlabsize(small) mlabcol("220 34 34") mlabgap(*.9) ///
+	yscale(range(`axismin',`axismax') titlegap(*-6)) ylab(200 300, labsize(small)) ytick(`min' `max', add custom nolab tlcolor(lime)) xlab(40 "-20" 50 "0" 60 "+20%") ///
+	xtick(#`ticknum') ///
+	ytitle("Seats", height(-8) orientation(horizontal) size(small)) xtitle("Popular Vote Margin", height(5)) ///
+	/*title("Seats by Popular Vote Margin")*/ plotregion(margin(zero)) graphregion(margin(0 5 0 2)) ///
+	/// note("Democrats won `gotten' seats with a popular vote margin of `demmarg'%.""Republicans could've won `gotten' seats with just `repmarg'%.""With `demmarg'%, Republicans would've won `wouldvegotten'.", size(vsmall) span) ///
+	///caption("@NathanLazarus3", size(vsmall) j(right) pos(5) ring(3)) ///
+	name(Cropped, replace)*/
+		
+		twoway ///scatter fakegotten popshare2018, m(none) mcol(gs8) msize(small) || ///
+		///connected majority repneed, lcolor(sand) lwidth(medthin) m(none)|| ///
+		connected repseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) m(none) yline(218, lcolor(sand)) || ///
+		line repseats repneed, lcolor("220 34 34*.36") || ///
+		connected demseats demneed, lcolor("22 107 170*.36") m(none) mlab(actuallab) mlabpos(4) mlabcolor("22 107 170*.4") mlabgap(*.5) mlabsize(vsmall)|| ///
+		///line fakerepseats fakerepneed, lcolor("220 34 34") || ///
+		scatter fakedemseats fakedemneed, m(none) mlab(fakelab) mlabpos(4) mlabcolor("22 107 170*1.1") mlabgap(*.5) mlabsize(vsmall)|| ///
+		line fakeline fakelinex, lcolor(black) lwidth(vthin) || ///
+		scatteri `liny' `linx' (`demmarkerloc') "`fakegotten'", m(none) mlabsize(small) mlabcol("22 107 170") mlabgap(*0.2) || ///
+		scatter gotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
+		scatter down and_tothe_right, m(none) mlab(gotten) mlabpos(0) mlabsize(small) mlabcol("22 107 170*.6") || ///
+		scatter wouldvegotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
+		scatter repy repx, m(none) mlab(wouldvegotten) mlabpos(10) mlabsize(small) mlabcol("220 34 34*.6") mlabgap(*`replabgap') ///
+		ylab(100 200 300, labsize(small)) xlab(40 "-20" 50 "0" 60 "+20%  ") ///
+		xtick(#`ticknum') ///
+		yscale(range($axismin,$axismax)) ///
+		ylab(245 "Seats", add custom notick labsize(medsmall) labgap(*7)) ///
+		ytick(`min' `max', add custom nolab tlcolor(lime)) ///
+		xtitle("Popular Vote Margin", height(4)) ///
+		/*title("Compact Districts, Following County Borders", size(medsmall))*/ plotregion(margin(zero)) graphregion(margin(0 5 0 2)) ///
+		name(CompacttoExport, replace)
+		
+		graph export graphs/Compact.svg, replace
+		
+		
 	}
 	
 	local++counter
@@ -546,8 +627,6 @@ name(combined, replace)
 
 graph export graphs/multigraph.png, replace
 
-gen fuck = "this"
-restore
 clear
 use `stateresults'
 merge 1:1 v1 using `algorithmiccompactstateresults', nogen

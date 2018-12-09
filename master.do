@@ -110,9 +110,9 @@ replace demshare = 100-logneed*100
 preserve
 run code/uncropped.do
 restore, preserve
-run code/cropped.do
+do code/multigraph.do
 restore, preserve
-run code/multigraph.do
+run code/cropped.do
 
 //add number of uncontested races to the output here.
 #delimit ;

@@ -63,9 +63,6 @@ d3.csv("/uncroppedlines.csv", type, (error, data) => {
     .attr("d", demline)
     .attr("stroke", "rgb(22 107 170)");
 
-  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2220.82" y1="1158.95" x2="2220.82" y2="1123.07" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>'+
-  '<line x1="2220.82" y1="1053.27" x2="2220.82" y2="1017.38" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>');
-
   const focus1 = svg.append('g')
     .attr('class', 'focus1')
     .style('display', 'none');
@@ -133,7 +130,7 @@ d3.csv("/uncroppedlines.csv", type, (error, data) => {
     .attr('x', text_x_pad)
     .attr('y', text_y_pad+small_gap+big_gap+small_gap);
 
-  focus1.append('text')
+    focus1.append('text')
     .attr('class','xval')
     .attr('x', 0)
     .attr('y', height-tooltipheight+xvaloffset)
@@ -241,3 +238,6 @@ function type(d) {
   d.repseats = +d.repseats;
   return d;
 }
+
+const addticks=d3.select('#uncropped').append('g').html('<line x1="2220.82" y1="1158.95" x2="2220.82" y2="1123.07" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>'+
+	'<line x1="2220.82" y1="1053.27" x2="2220.82" y2="1017.38" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>');
