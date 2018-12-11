@@ -190,5 +190,3 @@ twoway ///connected majority repneed, lcolor(sand) lwidth(medthin) mlabsize(smal
 
 	
 graph export graphs/Cropped.svg, replace
-
-assert 1 == 0

@@ -24,7 +24,6 @@ const repline = d3.line()
   .x(d => x(d.repneed))
   .y(d => y(d.repseats));
 
-
 const svg = d3.select('#uncropped').append('svg')
   .attr('viewBox', [-margin.left,-margin.top,3960,2880]);
 
@@ -54,14 +53,27 @@ d3.csv("/uncroppedlines.csv", type, (error, data) => {
   svg.append('path')
     .datum(data)
     .attr('class', 'line')
-    .attr("d", repline)
-    .attr("stroke", "rgb(220 34 34)");
+    .attr('d', repline)
+    .attr('stroke', 'rgb(220 34 34)')
+    .styles({
+      fill: 'none',
+      'stroke-width': '17',
+      'shape-rendering': 'crispEdges',
+      'opacity': '1'
+    });
 
   svg.append("path")
     .datum(data)
     .attr("class", "line")
     .attr("d", demline)
-    .attr("stroke", "rgb(22 107 170)");
+    .attr("stroke", "rgb(22 107 170)")
+    .styles({
+      fill: 'none',
+      'stroke-width': '17',
+      'shape-rendering': 'crispEdges',
+      'opacity': '1'
+    });
+
 
   svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2220.82" y1="1158.95" x2="2220.82" y2="1123.07" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>'+
   '<line x1="2220.82" y1="1053.27" x2="2220.82" y2="1017.38" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>');
@@ -69,14 +81,6 @@ d3.csv("/uncroppedlines.csv", type, (error, data) => {
   const focus1 = svg.append('g')
     .attr('class', 'focus1')
     .style('display', 'none');
-
-  d3.selectAll('.line')
-    .styles({
-      fill: 'none',
-      'stroke-width': '17',
-      'shape-rendering': 'crispEdges',
-      'opacity': '1'
-    });
 
   function newsize(x) {
     return Math.max(1.2*x, 1.2*x*500/containerheight);
@@ -214,7 +218,7 @@ d3.csv("/uncroppedlines.csv", type, (error, data) => {
     const labheight = 27.5*1.7;
     const yvalheight = 32*1.7;
 
-
+    focus1.selectAll('.flipped').style('visibility', 'hidden')
     focus1.selectAll('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
       .attr('x', Math.max(Math.min(0,(97.5*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(3*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
 

@@ -29,6 +29,8 @@ const repline = d3.line()
 const svg = d3.select('#cropped').append('svg')
   .attr('viewBox', [-margin.left,-margin.top,3960,2880]);
 
+
+
 d3.csv("/croppedlines.csv", type, (error, data) => {
   if (error) throw error;
 
@@ -57,13 +59,25 @@ d3.csv("/croppedlines.csv", type, (error, data) => {
     .datum(data)
     .attr('class', 'line')
     .attr("d", repline)
-    .attr("stroke", "rgb(220 34 34)");
+    .attr("stroke", "rgb(220 34 34)")
+    .styles({
+      fill: 'none',
+      'stroke-width': '17',
+      'shape-rendering': 'crispEdges',
+      'opacity': '1'
+    });
 
   svg.append("path")
     .datum(data)
     .attr("class", "line")
     .attr("d", demline)
-    .attr("stroke", "rgb(22 107 170)");
+    .attr("stroke", "rgb(22 107 170)")
+    .styles({
+      fill: 'none',
+      'stroke-width': '17',
+      'shape-rendering': 'crispEdges',
+      'opacity': '1'
+    });
 
 
   svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2676.71" y1="1055.87" x2="2676.71" y2="1019.98" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
@@ -73,13 +87,6 @@ d3.csv("/croppedlines.csv", type, (error, data) => {
     .attr('class', 'focus2')
     .style('display', 'none');
 
-  d3.selectAll('.line')
-    .styles({
-      fill: 'none',
-      'stroke-width': '17',
-      'shape-rendering': 'crispEdges',
-      'opacity': '1'
-    });
 
   function newsize(x) {
     return Math.max(1.2*x, 1.2*x*500/containerheight);
@@ -217,7 +224,7 @@ d3.csv("/croppedlines.csv", type, (error, data) => {
     const labheight = 27.5*1.7;
     const yvalheight = 32*1.7;
 
-
+    focus2.selectAll('.flipped').style('visibility', 'hidden')
     focus2.selectAll('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
       .attr('x', Math.max(Math.min(0,(97.5*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(3*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
 

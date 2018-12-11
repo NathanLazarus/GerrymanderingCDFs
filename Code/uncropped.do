@@ -52,6 +52,88 @@ sum demneed if demseats == 218
 global demmaj = round(r(mean),0.001)
 
 
+//gets average differences between D and R at the same level of votes/seats
+tempfile things integrationvals
+save `things'
+clear
+set seed 1048576
+local thisyear = 50+`marg'
+input x
+53
+53.3
+53.1
+52.6
+50.1 //actually 49.9
+50.1
+50.3
+51.5
+50.7
+53.6
+54.7
+52.6
+51.1 //actually 48.9
+52.4
+50.8
+end
+set obs `=_N+1'
+replace x = `thisyear' in `=_N'
+sum x
+local sd = r(sd)
+expand 1000
+gen got = x+`sd'/sqrt(15)*rt(15)
+replace got = 50 + abs(got-50)
+sum got
+local max = r(max)
+keep got
+save `integrationvals'
+use `things'
+stack demneed demseats demseats repseats demneed repneed /**/ repneed repseats demseats repseats demneed repneed, into(need seats demseats repseats demneed repneed)
+rename _stack party
+sum need if need<50
+sum seats if need>r(max)
+keep if seats>`=r(min)-2'
+gen otherpartyseats = .
+forvalues i=1/`=_N' {
+	sum seats if need<need[`i']&party!=party[`i']
+	replace otherpartyseats = r(max) in `i'
+}
+gen demneedifrepwin = .
+gen repneedifdemwin = .
+forvalues i=1/`=_N' {
+if party[`i']==1 {
+	sum repneed if repseats == seats[`i']
+	replace repneedifdemwin = r(mean) in `i'
+	sum demneed if demseats == otherpartyseats[`i']
+	replace demneedifrepwin = r(mean) in `i'
+}
+if party[`i']==2 {
+	sum demneed if demseats == seats[`i']
+	replace demneedifrepwin = r(mean) in `i'
+	sum repneed if repseats == otherpartyseats[`i']
+	replace repneedifdemwin = r(mean) in `i'
+}
+}
+gen seatgap = otherpartyseats-seats
+replace seatgap = -seatgap if party == 1
+gen votegap = (demneedifrepwin/*-got+got*/-repneedifdemwin)/2
+keep if need<=`max'
+keep need seatgap votegap
+keep if seatgap != .
+cross using `integrationvals'
+keep if got>need
+gsort got
+bys got: egen max = max(need)
+keep if need == max
+sum seatgap
+global averageseatgap = r(mean)
+sum votegap
+global averagevotegap = 2*r(mean)
+clear
+
+
+use `things'
+
+
 expand 2, gen(add)
 replace demseats=demseats-add
 replace repseats=repseats-(1-add)

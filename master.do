@@ -110,18 +110,20 @@ replace demshare = 100-logneed*100
 preserve
 run code/uncropped.do
 restore, preserve
-do code/multigraph.do
+run code/multigraph.do
 restore, preserve
 run code/cropped.do
 
 //add number of uncontested races to the output here.
 #delimit ;
-di `"Stats for w: if the popular vote split 50-50, dems would win $ifeven seats.
+di `"Stats for article: if the popular vote split 50-50, dems would win $ifeven seats.
 	If Dems won 75-25, they'd lose $dem75 seats.
 	If Reps won 75-25, they'd lose $rep75 seats.
 	Democrats needed to win the popular vote by $demmaj.
 	Democrats would need to win the popular vote by $compactdemmaj if districts were compact.
 	The 2018 electorate was `compositionaleffect' more conservative.
+	On average, Democrats get $averageseatgap fewer seats with the same vote total.
+	Democrats need a margin that's $averagevotegap larger to win the same number of seats.
 	I used a polynomial of $order order to approximate vote shares based on PVI.
 	$note
 	"';

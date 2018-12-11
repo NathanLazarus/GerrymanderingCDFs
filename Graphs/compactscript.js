@@ -74,25 +74,28 @@ d3.csv("/compactlines.csv", type, (error, data) => {
     .datum(data)
     .attr('class', 'line')
     .attr("d", repline)
-    .attr("stroke", "rgb(220 34 34)");
-
-  svg.append("path")
-    .datum(data)
-    .attr("class", "line")
-    .attr("d", demline)
-    .attr("stroke", "rgb(22 107 170)");
-
-  const focus3 = svg.append('g')
-    .attr('class', 'focus3')
-    .style('display', 'none');
-
-  d3.selectAll('.line')
+    .attr("stroke", "rgb(220 34 34)")
     .styles({
       fill: 'none',
       'stroke-width': '17',
       'shape-rendering': 'crispEdges',
       'opacity': '1'
     });
+
+  svg.append("path")
+    .datum(data)
+    .attr("class", "line")
+    .attr("d", demline)
+    .attr("stroke", "rgb(22 107 170)").styles({
+      fill: 'none',
+      'stroke-width': '17',
+      'shape-rendering': 'crispEdges',
+      'opacity': '1'
+    });
+
+  const focus3 = svg.append('g')
+    .attr('class', 'focus3')
+    .style('display', 'none');
 
   function newsize(x) {
     return Math.max(1.2*x, 1.2*x*500/containerheight);
@@ -230,7 +233,7 @@ d3.csv("/compactlines.csv", type, (error, data) => {
     const labheight = 27.5*1.7;
     const yvalheight = 32*1.7;
 
-
+    focus3.selectAll('.flipped').style('visibility', 'hidden')
     focus3.selectAll('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
       .attr('x', Math.max(Math.min(0,(97.5*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(3*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
 
