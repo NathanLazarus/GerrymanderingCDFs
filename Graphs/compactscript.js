@@ -6,6 +6,8 @@ const width = 3960 - margin.left - margin.right;
 const height = 2880 - margin.top - margin.bottom;
 
 const containerheight = document.getElementById('compactContainer').scrollHeight
+const containerwidth = containerheight*3960/2880
+const containerwidth500 = 500*3960/2880
 
 const bisectDem = d3.bisector(d => d.demneed).left;
 const bisectRep = d3.bisector(d => d.repneed).left;
@@ -216,26 +218,32 @@ d3.csv("/compactlines.csv", type, (error, data) => {
     });*/
   function mouseover() {
     focuses.style('display', null);
-    const x0 = x.invert(d3.mouse(this)[0]);
+    const x0 = Math.min(Math.max(xlims[0],x.invert(d3.mouse(this)[0])),xlims[1]);
     const i = bisectDem(data, x0, 1);
     const j = bisectRep(data, x0, 1);
     const rep = data[j];
     const dem = data[i];
     focuses.attr('transform', `translate(${(x0-xlims[0])*width/(xlims[1]-xlims[0])}, ${tooltipheight})`);
 
-    focusline3.select('line.y')
-      .attr('x1', 0)
-      .attr('x2', 0)
-      .attr('y1', -tooltipheight)
-      .attr('y2', height - tooltipheight);
-
     const xvalheight = 38*1.7;
     const labheight = 27.5*1.7;
     const yvalheight = 32*1.7;
 
-    focus3.selectAll('.flipped').style('visibility', 'hidden')
+    focusline3.select('line.y')
+      .attr('x1', 0)
+      .attr('x2', 0)
+      .attr('y1', -tooltipheight)
+      .attr('y2', height - tooltipheight+xvaloffset-newsize(xvalheight)+15);
+
+    const rightbig = 98.5
+    const rightsmall = 96.5
+    const leftbig = 3
+    const leftsmall = 6
+    const rightstop = Math.min(Math.max(rightsmall,rightsmall+(rightbig-rightsmall)*(containerwidth-350)/(containerwidth500-350)),rightbig)
+    const leftstop = Math.max(Math.min(leftsmall,leftsmall-(leftsmall-leftbig)*(containerwidth-350)/(containerwidth500-350)),leftbig)
+
     focus3.selectAll('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
-      .attr('x', Math.max(Math.min(0,(97*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(4*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
+      .attr('x', Math.max(Math.min(0,(rightstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(leftstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
 
     focus3.selectAll('.demlab').text("Democrats:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');
     focus3.selectAll('.demval').text(dem.demseats).style('text-anchor', 'left').style('font', newsize(yvalheight)+'px sans-serif').style('fill','#FFFFFF');
@@ -252,26 +260,32 @@ d3.csv("/compactlines.csv", type, (error, data) => {
   }
 
   function mousemove() {
-    const x0 = x.invert(d3.mouse(this)[0]);
+    const x0 = Math.min(Math.max(xlims[0],x.invert(d3.mouse(this)[0])),xlims[1]);
     const i = bisectDem(data, x0, 1);
     const j = bisectRep(data, x0, 1);
     const rep = data[j];
     const dem = data[i];
     focuses.attr('transform', `translate(${(x0-xlims[0])*width/(xlims[1]-xlims[0])}, ${tooltipheight})`);
 
-    focusline3.select('line.y')
-      .attr('x1', 0)
-      .attr('x2', 0)
-      .attr('y1', -tooltipheight)
-      .attr('y2', height - tooltipheight);
-
     const xvalheight = 38*1.7;
     const labheight = 27.5*1.7;
     const yvalheight = 32*1.7;
 
-    focus3.selectAll('.flipped').style('visibility', 'hidden')
+    focusline3.select('line.y')
+      .attr('x1', 0)
+      .attr('x2', 0)
+      .attr('y1', -tooltipheight)
+      .attr('y2', height - tooltipheight+xvaloffset-newsize(xvalheight)+15);
+
+    const rightbig = 98.5
+    const rightsmall = 96.5
+    const leftbig = 3
+    const leftsmall = 6
+    const rightstop = Math.min(Math.max(rightsmall,rightsmall+(rightbig-rightsmall)*(containerwidth-350)/(containerwidth500-350)),rightbig)
+    const leftstop = Math.max(Math.min(leftsmall,leftsmall-(leftsmall-leftbig)*(containerwidth-350)/(containerwidth500-350)),leftbig)
+
     focus3.selectAll('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
-      .attr('x', Math.max(Math.min(0,(97*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(4*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
+      .attr('x', Math.max(Math.min(0,(rightstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(leftstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
 
     focus3.selectAll('.demlab').text("Democrats:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');
     focus3.selectAll('.demval').text(dem.demseats).style('text-anchor', 'left').style('font', newsize(yvalheight)+'px sans-serif').style('fill','#FFFFFF');

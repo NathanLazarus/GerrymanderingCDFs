@@ -79,7 +79,7 @@ set obs `=_N+1'
 replace x = `thisyear' in `=_N'
 sum x
 local sd = r(sd)
-expand 10 //000
+expand 10000
 gen got = x+`sd'/sqrt(15)*rt(15)
 replace got = 50 + abs(got-50)
 sum got
@@ -188,7 +188,7 @@ twoway connected majority repneed, lcolor(sand) lwidth(medthin) mlab(majoritylab
 	scatter down and_tothe_right, m(none) mlab(gotten) mlabpos(0) mlabsize(small) mlabcol("22 107 170") || ///
 	scatter wouldvegotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
 	scatter wouldvegotten left_alittle, m(none) mlab(wouldvegotten) mlabpos(11) mlabsize(small) mlabcol("220 34 34") mlabgap(*.6) ///
-	yscale(titlegap(*-6)) ylab(100(100)400, labsize(small)) ytick(435, add custom nolab tlcolor(white)) xlab(0 "-100" 25 "-50" 50 "0" 75 "50" 100 "100%") ///
+	yscale(titlegap(*-6)) ylab(100(100)400, labsize(small)) ytick(435, add custom nolab tlcolor(white)) xlab(0 "-100" 25 "-50" 50 "0" 75 "50" 100 "+100% ") ///
 	xtick(0(12.5)100) ///
 	ytitle("Seats", height(-8) orientation(horizontal) size(small)) xtitle("Popular Vote Margin", height(7)) ///
 	title("Seats by Popular Vote Margin") plotregion(margin(zero)) graphregion(margin(0 5 3 5)) ///
@@ -207,7 +207,7 @@ twoway /*connected majority repneed, lcolor(sand) lwidth(medthin) mlab(majorityl
 	scatter down and_tothe_right, m(none) mlab(gotten) mlabpos(0) mlabsize(small) mlabcol("22 107 170") || ///
 	scatter wouldvegotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
 	scatter wouldvegotten left_alittle, m(none) mlab(wouldvegotten) mlabpos(11) mlabsize(small) mlabcol("220 34 34") mlabgap(*.6) ///
-	yscale(range(-30,440) titlegap(*-6)) ylab(0(100)400, labsize(small)) ytick(435, add custom nolab tlcolor(lime)) xlab(0 "-100" 25 "-50" 50 "0" 75 "50" 100 "100%") ///
+	yscale(range(-30,440) titlegap(*-6)) ylab(0(100)400, labsize(small)) ytick(435, add custom nolab tlcolor(lime)) xlab(0 "-100" 25 "-50" 50 "0" 75 "50" 100 "+100% ") ///
 	xtick(0(12.5)100) ///
 	ytitle("Seats", height(-8) orientation(horizontal) size(small)) xtitle("Popular Vote Margin", height(7)) ///
 	/*title("Seats by Popular Vote Margin")*/ plotregion(margin(zero)) graphregion(margin(0 5 0 2)) ///
