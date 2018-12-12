@@ -53,24 +53,7 @@ d3.csv("/compactlines.csv", type, (error, data) => {
       'stroke-dasharray': '5 5'
     });
 
-  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2699.85" y1="1108.83" x2="2699.85" y2="1072.95" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
-  '<line x1="2699.85" y1="889.05" x2="2699.85" y2="853.16" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
-  '<line x1="2699.85" y1="937.06" x2="2730.05" y2="929.39" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2730.05" y1="929.39" x2="2760.12" y2="921.60" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2760.12" y1="921.60" x2="2790.32" y2="913.92" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2790.32" y1="913.92" x2="2820.51" y2="906.25" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2820.51" y1="906.25" x2="2850.58" y2="898.58" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2850.58" y1="898.58" x2="2880.78" y2="890.90" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2880.78" y1="890.90" x2="2910.85" y2="883.23" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2910.85" y1="883.23" x2="2941.04" y2="875.43" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2941.04" y1="875.43" x2="2971.11" y2="867.76" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2971.11" y1="867.76" x2="3001.31" y2="860.09" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3001.31" y1="860.09" x2="3031.38" y2="852.42" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3031.38" y1="852.42" x2="3061.57" y2="844.74" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3061.57" y1="844.74" x2="3091.65" y2="836.95" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3091.65" y1="836.95" x2="3121.84" y2="829.27" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>');
-
-  svg.append('path')
+  /*svg.append('path')
     .datum(data)
     .attr('class', 'line')
     .attr("d", repline)
@@ -91,7 +74,24 @@ d3.csv("/compactlines.csv", type, (error, data) => {
       'stroke-width': '17',
       'shape-rendering': 'crispEdges',
       'opacity': '1'
-    });
+    });*/
+
+  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2699.85" y1="1108.83" x2="2699.85" y2="1072.95" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
+  '<line x1="2699.85" y1="889.05" x2="2699.85" y2="853.16" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
+  '<line x1="2699.85" y1="937.06" x2="2730.05" y2="929.39" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2730.05" y1="929.39" x2="2760.12" y2="921.60" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2760.12" y1="921.60" x2="2790.32" y2="913.92" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2790.32" y1="913.92" x2="2820.51" y2="906.25" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2820.51" y1="906.25" x2="2850.58" y2="898.58" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2850.58" y1="898.58" x2="2880.78" y2="890.90" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2880.78" y1="890.90" x2="2910.85" y2="883.23" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2910.85" y1="883.23" x2="2941.04" y2="875.43" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2941.04" y1="875.43" x2="2971.11" y2="867.76" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2971.11" y1="867.76" x2="3001.31" y2="860.09" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="3001.31" y1="860.09" x2="3031.38" y2="852.42" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="3031.38" y1="852.42" x2="3061.57" y2="844.74" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="3061.57" y1="844.74" x2="3091.65" y2="836.95" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="3091.65" y1="836.95" x2="3121.84" y2="829.27" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>');
 
   const focus3 = svg.append('g')
     .attr('class', 'focus3')
@@ -104,17 +104,17 @@ d3.csv("/compactlines.csv", type, (error, data) => {
   const tooltipheight = 400
   const rectwidth = newsize(318)
   const rectheight = newsize(250)
-  const rect_y = -80
+  const rect_y = -newsize(80)
   const rect_x = newsize(36)
   const rectround = newsize(30)
   const rectcolor = '#555'
-  const triangle = [6,0,newsize(rect_x),newsize(-(rect_x)/2),newsize(rect_x),newsize(rect_x)/2]
-  const fliptriangle = [-6,0,-rect_x,-(rect_x)/2,-rect_x,(rect_x)/2]
+  const triangle = [6,0,rect_x,-rect_x/2,rect_x,rect_x/2]
+  const fliptriangle = [-6,0,-rect_x,-rect_x/2,-rect_x,(rect_x)/2]
   const text_x_pad = rect_x + newsize(26)
   const text_y_pad = rect_y + newsize(53)
   const small_gap = newsize(54)
   const big_gap = newsize(59)
-  const xvaloffset = 1.2*64
+  const xvaloffset = 1.2*66
 
 
   focus3.append('rect')
@@ -198,8 +198,8 @@ d3.csv("/compactlines.csv", type, (error, data) => {
   svg.append('rect')
     .attr('class', 'overlay')
     .attr('width', width)
-    .attr('height', height)
-    .on('mouseover', () => focuses.style('display', null))
+    .attr('height', height+xvaloffset)
+    .on('mouseover', mouseover)
     .on('mouseout', () => focuses.style('display', 'none'))
     .on('mousemove', mousemove)
     .styles({
@@ -214,6 +214,42 @@ d3.csv("/compactlines.csv", type, (error, data) => {
       'stroke-width': '10',
       'stroke-dasharray': '5 5'
     });*/
+  function mouseover() {
+    focuses.style('display', null);
+    const x0 = x.invert(d3.mouse(this)[0]);
+    const i = bisectDem(data, x0, 1);
+    const j = bisectRep(data, x0, 1);
+    const rep = data[j];
+    const dem = data[i];
+    focuses.attr('transform', `translate(${(x0-xlims[0])*width/(xlims[1]-xlims[0])}, ${tooltipheight})`);
+
+    focusline3.select('line.y')
+      .attr('x1', 0)
+      .attr('x2', 0)
+      .attr('y1', -tooltipheight)
+      .attr('y2', height - tooltipheight);
+
+    const xvalheight = 38*1.7;
+    const labheight = 27.5*1.7;
+    const yvalheight = 32*1.7;
+
+    focus3.selectAll('.flipped').style('visibility', 'hidden')
+    focus3.selectAll('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
+      .attr('x', Math.max(Math.min(0,(97*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(4*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
+
+    focus3.selectAll('.demlab').text("Democrats:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');
+    focus3.selectAll('.demval').text(dem.demseats).style('text-anchor', 'left').style('font', newsize(yvalheight)+'px sans-serif').style('fill','#FFFFFF');
+    focus3.selectAll('.replab').text("Republicans:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');
+    focus3.selectAll('.repval').text(rep.repseats).style('text-anchor', 'left').style('font', newsize(yvalheight)+'px sans-serif').style('fill','#FFFFFF');
+    if((x0-xlims[0])*width/(xlims[1]-xlims[0])+rect_x+rectwidth<width){
+      focus3.selectAll('.flipped').style('visibility', 'hidden')
+      focus3.selectAll('.notflipped').style('visibility', 'visible')
+    }
+    if((x0-xlims[0])*width/(xlims[1]-xlims[0])+rect_x+rectwidth>=width){
+      focus3.selectAll('.notflipped').style('visibility', 'hidden')
+      focus3.selectAll('.flipped').style('visibility', 'visible')
+    }
+  }
 
   function mousemove() {
     const x0 = x.invert(d3.mouse(this)[0]);
@@ -235,7 +271,7 @@ d3.csv("/compactlines.csv", type, (error, data) => {
 
     focus3.selectAll('.flipped').style('visibility', 'hidden')
     focus3.selectAll('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
-      .attr('x', Math.max(Math.min(0,(97.5*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(3*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
+      .attr('x', Math.max(Math.min(0,(97*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(4*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
 
     focus3.selectAll('.demlab').text("Democrats:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');
     focus3.selectAll('.demval').text(dem.demseats).style('text-anchor', 'left').style('font', newsize(yvalheight)+'px sans-serif').style('fill','#FFFFFF');

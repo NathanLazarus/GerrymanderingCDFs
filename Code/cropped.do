@@ -130,7 +130,7 @@ twoway connected majority repneed, lcolor(sand) lwidth(medthin) mlabsize(small) 
 .Cropped.plotregion1.added_text[2].text.Arrpush Proportional
 .Cropped.drawgraph
 	
-graph export graphs/Cropped.png, replace
+graph export graphs/Cropped.png, width(8000) replace
 
 tempfile stuff  demlines
 save `stuff'
@@ -160,16 +160,18 @@ local max = r(max)
 sum demseats
 local min = min(`min',r(min))
 local max = max(`max',r(max))
+local axismin = `min'-10
+local axismax = `max'+3
 
 twoway ///connected majority repneed, lcolor(sand) lwidth(medthin) mlabsize(small) m(none)|| ///
 	connected proportionalseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) m(none) yline(218, lcolor(sand)) || ///
-	///connected repseats repneed, lcolor("220 34 34") lwidth(medthick) m(none) mlab(replab) mlabpos(10) mlabcolor("220 34 34*1.1") mlabgap(*.9) mlabsize(vsmall) || ///
-	///connected demseats demneed, lcolor("22 107 170") lwidth(medthick) m(none) mlab(demlab) mlabpos(3) mlabcolor("22 107 170*1.1") mlabgap(*3) mlabsize(vsmall) || ///
+	connected repseats repneed, lcolor("220 34 34") lwidth(medthick) m(none) || ///
+	connected demseats demneed, lcolor("22 107 170") lwidth(medthick) m(none) || ///
 	scatter gotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
 	scatter down and_tothe_right, m(none) mlab(gotten) mlabpos(0) mlabsize(small) mlabcol("22 107 170") || ///
 	scatter wouldvegotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
 	scatter wouldvegotten left_alittle, m(none) mlab(wouldvegotten) mlabpos(12) mlabsize(small) mlabcol("220 34 34") mlabgap(*.9) ///
-	yscale(range($axismin,$axismax) titlegap(*-6)) ylab(100 200 300, labsize(small)) ytick(`min' `max', add custom nolab tlcolor(lime)) xlab(40 "-20" 50 "0" 60 "+20%") ///
+	yscale(range(`axismin',`axismax') titlegap(*-6)) ylab(200 300, labsize(small)) ytick(`min' `max', add custom nolab tlcolor(lime)) xlab(40 "-20" 50 "0" 60 "+20%") ///
 	xtick(#`ticknum') ///
 	ytitle("Seats", height(-8) orientation(horizontal) size(small)) xtitle("Popular Vote Margin", height(5)) ///
 	/*title("Seats by Popular Vote Margin")*/ plotregion(margin(zero)) graphregion(margin(0 5 0 2)) ///

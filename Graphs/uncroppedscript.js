@@ -1,6 +1,6 @@
 //uncroppedscript.js
 
-const margin = { top: 84.03, right: 3960-3815.83, bottom: 2880-2382.76, left: 397.86 };
+const margin = { top: 83.41, right: 3960-3815.83, bottom: 2880-2333.26, left: 397.86 };
 const width = 3960 - margin.left - margin.right;
 const height = 2880 - margin.top - margin.bottom;
 
@@ -50,7 +50,7 @@ d3.csv("/uncroppedlines.csv", type, (error, data) => {
       'stroke-dasharray': '5 5'
     });
 
-  svg.append('path')
+  /*svg.append('path')
     .datum(data)
     .attr('class', 'line')
     .attr('d', repline)
@@ -72,11 +72,11 @@ d3.csv("/uncroppedlines.csv", type, (error, data) => {
       'stroke-width': '17',
       'shape-rendering': 'crispEdges',
       'opacity': '1'
-    });
+    });*/
 
 
-  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2220.82" y1="1158.95" x2="2220.82" y2="1123.07" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>'+
-  '<line x1="2220.82" y1="1053.27" x2="2220.82" y2="1017.38" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>');
+  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2220.82" y1="1032.35" x2="2220.82" y2="996.47" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>'+
+  '<line x1="2220.82" y1="1135.81" x2="2220.82" y2="1099.92" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>');
 
   const focus1 = svg.append('g')
     .attr('class', 'focus1')
@@ -89,17 +89,17 @@ d3.csv("/uncroppedlines.csv", type, (error, data) => {
   const tooltipheight = 400
   const rectwidth = newsize(318)
   const rectheight = newsize(250)
-  const rect_y = -80
+  const rect_y = -newsize(80)
   const rect_x = newsize(36)
   const rectround = newsize(30)
   const rectcolor = '#555'
-  const triangle = [6,0,newsize(rect_x),newsize(-(rect_x)/2),newsize(rect_x),newsize(rect_x)/2]
-  const fliptriangle = [-6,0,-rect_x,-(rect_x)/2,-rect_x,(rect_x)/2]
+  const triangle = [6,0,rect_x,-rect_x/2,rect_x,rect_x/2]
+  const fliptriangle = [-6,0,-rect_x,-rect_x/2,-rect_x,(rect_x)/2]
   const text_x_pad = rect_x + newsize(26)
   const text_y_pad = rect_y + newsize(53)
   const small_gap = newsize(54)
   const big_gap = newsize(59)
-  const xvaloffset = 1.2*64
+  const xvaloffset = 1.2*108
 
 
   focus1.append('rect')
@@ -183,8 +183,8 @@ d3.csv("/uncroppedlines.csv", type, (error, data) => {
   svg.append('rect')
     .attr('class', 'overlay')
     .attr('width', width)
-    .attr('height', height)
-    .on('mouseover', () => focuses.style('display', null))
+    .attr('height', height+xvaloffset)
+    .on('mouseover', mouseover)
     .on('mouseout', () => focuses.style('display', 'none'))
     .on('mousemove', mousemove)
     .styles({
@@ -199,6 +199,43 @@ d3.csv("/uncroppedlines.csv", type, (error, data) => {
       'stroke-width': '10',
       'stroke-dasharray': '5 5'
     });*/
+
+  function mouseover() {
+    focuses.style('display', null);
+    const x0 = x.invert(d3.mouse(this)[0]);
+    const i = bisectDem(data, x0, 1);
+    const j = bisectRep(data, x0, 1);
+    const rep = data[j];
+    const dem = data[i];
+    focuses.attr('transform', `translate(${(x0-xlims[0])*width/(xlims[1]-xlims[0])}, ${tooltipheight})`);
+
+    focusline1.select('line.y')
+      .attr('x1', 0)
+      .attr('x2', 0)
+      .attr('y1', -tooltipheight)
+      .attr('y2', height - tooltipheight);
+
+    const xvalheight = 38*1.7;
+    const labheight = 27.5*1.7;
+    const yvalheight = 32*1.7;
+
+    focus1.selectAll('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
+      .attr('x', Math.max(Math.min(0,(97*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(4*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])))
+      .style('visibility', 'visible');
+
+    focus1.selectAll('.demlab').text("Democrats:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');
+    focus1.selectAll('.demval').text(dem.demseats).style('text-anchor', 'left').style('font', newsize(yvalheight)+'px sans-serif').style('fill','#FFFFFF');
+    focus1.selectAll('.replab').text("Republicans:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');
+    focus1.selectAll('.repval').text(rep.repseats).style('text-anchor', 'left').style('font', newsize(yvalheight)+'px sans-serif').style('fill','#FFFFFF');
+    if((x0-xlims[0])*width/(xlims[1]-xlims[0])+rect_x+rectwidth<width){
+      focus1.selectAll('.flipped').style('visibility', 'hidden')
+      focus1.selectAll('.notflipped').style('visibility', 'visible')
+    }
+    if((x0-xlims[0])*width/(xlims[1]-xlims[0])+rect_x+rectwidth>=width){
+      focus1.selectAll('.notflipped').style('visibility', 'hidden')
+      focus1.selectAll('.flipped').style('visibility', 'visible')
+    }
+  }
 
   function mousemove() {
     const x0 = x.invert(d3.mouse(this)[0]);
@@ -218,9 +255,9 @@ d3.csv("/uncroppedlines.csv", type, (error, data) => {
     const labheight = 27.5*1.7;
     const yvalheight = 32*1.7;
 
-    focus1.selectAll('.flipped').style('visibility', 'hidden')
     focus1.selectAll('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
-      .attr('x', Math.max(Math.min(0,(97.5*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(3*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
+      .attr('x', Math.max(Math.min(0,(97*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(4*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])))
+      .style('visibility', 'visible');
 
     focus1.selectAll('.demlab').text("Democrats:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');
     focus1.selectAll('.demval').text(dem.demseats).style('text-anchor', 'left').style('font', newsize(yvalheight)+'px sans-serif').style('fill','#FFFFFF');

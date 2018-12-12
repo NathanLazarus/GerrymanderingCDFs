@@ -531,7 +531,7 @@ foreach altmap of local maps {
 		title("Compact Districts, Following County Borders", size(medsmall)) plotregion(margin(zero)) graphregion(margin(medium)) ///
 		name(CompacttoExport, replace)
 		
-		graph export graphs/Compact.png, replace
+		graph export graphs/Compact.png, width(8000) replace
 		
 		
 		tempfile stuff demlines
@@ -569,8 +569,8 @@ foreach altmap of local maps {
 		sum fakedemseats
 		local min = min(`min',r(min))
 		local max = max(`max',r(max))
-		global axismin = `min'-8
-		global axismax = `max'+3
+		local axismin = `min'-8
+		local axismax = `max'+3
 
 /*twoway ///connected majority repneed, lcolor(sand) lwidth(medthin) mlabsize(small) m(none)|| ///
 	connected proportionalseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) m(none) yline(218, lcolor(sand)) || ///
@@ -592,9 +592,9 @@ foreach altmap of local maps {
 		///connected majority repneed, lcolor(sand) lwidth(medthin) m(none)|| ///
 		connected repseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) m(none) yline(218, lcolor(sand)) || ///
 		line repseats repneed, lcolor("220 34 34*.36") || ///
-		connected demseats demneed, lcolor("22 107 170*.36") m(none) mlab(actuallab) mlabpos(4) mlabcolor("22 107 170*.4") mlabgap(*.5) mlabsize(vsmall)|| ///
-		///line fakerepseats fakerepneed, lcolor("220 34 34") || ///
-		scatter fakedemseats fakedemneed, m(none) mlab(fakelab) mlabpos(4) mlabcolor("22 107 170*1.1") mlabgap(*.5) mlabsize(vsmall)|| ///
+		connected demseats demneed, lcolor("22 107 170*.36") m(none) mlab(actuallab) mlabpos(4) mlabcolor("22 107 170*.4") mlabgap(*.5) mlabsize(*.9)|| ///
+		line fakerepseats fakerepneed, lcolor("220 34 34") || ///
+		connected fakedemseats fakedemneed, lcolor("22 107 170") m(none) mlab(fakelab) mlabpos(4) mlabcolor("22 107 170*1.1") mlabgap(*.5) mlabsize(*.9)|| ///
 		line fakeline fakelinex, lcolor(black) lwidth(vthin) || ///
 		scatteri `liny' `linx' (`demmarkerloc') "`fakegotten'", m(none) mlabsize(small) mlabcol("22 107 170") mlabgap(*0.2) || ///
 		scatter gotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
@@ -603,7 +603,7 @@ foreach altmap of local maps {
 		scatter repy repx, m(none) mlab(wouldvegotten) mlabpos(10) mlabsize(small) mlabcol("220 34 34*.6") mlabgap(*`replabgap') ///
 		ylab(100 200 300, labsize(small)) xlab(40 "-20" 50 "0" 60 "+20%  ") ///
 		xtick(#`ticknum') ///
-		yscale(range($axismin,$axismax)) ///
+		yscale(range(`axismin',`axismax')) ///
 		ylab(245 "Seats", add custom notick labsize(medsmall) labgap(*7)) ///
 		ytick(`min' `max', add custom nolab tlcolor(lime)) ///
 		xtitle("Popular Vote Margin", height(4)) ///
@@ -625,7 +625,7 @@ note("Maps from FiveThirtyEight's Redistricting Atlas", size(*0.65)) ///
 ///caption("@NathanLazarus3", size(vsmall) j(right) pos(5)) ///
 name(combined, replace)
 
-graph export graphs/multigraph.png, replace
+graph export graphs/multigraph.png, width(8000) replace
 
 clear
 use `stateresults'
@@ -653,7 +653,7 @@ graph hbar compactdiff0 compactdiff1 algorithmiccompactdiff0 algorithmiccompactd
 	bar(1, color("22 107 170*1.1")) bar(3, color("22 107 170*.36")) bar(2, color("220 34 34*1.1"))  bar(4, color("220 34 34*.36")) ///
 	bargap(0) nofill ysc(range(0,1)) ylab(0 2 4) ytitle("Seats", orientation(horizontal)) ///
 	plotregion(margin(zero)) graphregion(margin(medium)) ///
-	legend(on order(2 "County" "Borders" 4 "Ignore" "County" "Borders") ring(0) cols(1) pos(3) symxsize(*0.5) symysize(*0.5) region(lwidth(none)) size(small)) ///
+	legend(on order(2 " " "County" "Borders" "(Square)" " " 4 "Ignore" "County" "Borders" "(Circular)") ring(0) cols(1) pos(3) symxsize(*0.5) symysize(*0.5) region(lwidth(none)) size(small)) ///
 	name(stategerrymander, replace)
 
-graph export graphs/stategerrymander.png, replace
+graph export graphs/stategerrymander.png, width(8000) replace

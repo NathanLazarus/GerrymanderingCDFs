@@ -106,6 +106,11 @@ forvalues i=1/435{
 	replace logneed = r(mean) in `i'
 }
 replace demshare = 100-logneed*100
+sum totalvotes
+local totalvotes = r(sum)
+local demtotalvotes = `totalvotes'*(.5+${marg}/100)
+local reptotalvotes = `totalvotes'*(.5-${marg}/100)
+local totalmarg = `demtotalvotes'-`reptotalvotes'
 
 preserve
 run code/uncropped.do
@@ -125,6 +130,7 @@ di `"Stats for article: if the popular vote split 50-50, dems would win $ifeven 
 	On average, Democrats get $averageseatgap fewer seats with the same vote total.
 	Democrats need a margin that's $averagevotegap larger to win the same number of seats.
 	I used a polynomial of $order order to approximate vote shares based on PVI.
+	Out of `totalvotes', dems won `demtotalvotes' and reps won `reptotalvotes', giving dems a margin of `totalmarg'.
 	$note
 	"';
 	
