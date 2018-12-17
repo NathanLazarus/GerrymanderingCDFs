@@ -288,7 +288,7 @@ foreach altmap of local maps {
 	
 	if "`altmap'" == "Compact" {
 		sum fakedemneed if fakedemseats == 218
-		global compactdemmaj = round(r(mean),0.001)
+		global compactdemmaj = r(mean)
 	}
 	
 	expand 2, gen(add)
@@ -489,27 +489,79 @@ foreach altmap of local maps {
 		name(`altmap', replace)
 
 		
-	if "`altmap'"=="Compact" {
+	if "`altmap'"=="Compact"|"`altmap'"=="Proportional"|"`altmap'"=="Competitive" {
 	
-		replace fakeline = `fakegotten'+(fakedemseats-161)*0.7 if inrange(fakedemseats,161,175)&add==0
-		replace fakelinex = `demgot'+(fakedemseats-161)*0.18 if inrange(fakedemseats,161,175)&add==0
+		local altmapname2 = "`altmapname'"
+		if "`altmap'"=="Compact" local altmapname2= "Compact Districts, Following County Borders"
+
 			
-		replace repx = popshare2018-0.2
-		replace repy = wouldvegotten+1.5
-		local replabgap=1.25
-		
-		replace and_tothe_right = popshare2018+0.58
-		replace down = gotten - 7
-		
-		qui sum fakedemneed if fakedemneed>46.8&add==0
-		gen fakelab = `"Compact Districts"' if fakedemneed == r(min)&add==0
-		qui sum demneed if demneed>50.3&add==0
-		gen actuallab = `"Actual Districts"' if demneed == r(min)&add==0
-				
-		sum fakeline
-		local liny = r(max)
-		sum fakelinex
-		local linx = r(max)
+		local fakelabgap = 0.5
+		local fakelabloc = 4
+		if "`altmap'"=="Compact" {
+
+			replace fakeline = `fakegotten'+(fakedemseats-161)*0.7 if inrange(fakedemseats,161,175)&add==0
+			replace fakelinex = `demgot'+(fakedemseats-161)*0.18 if inrange(fakedemseats,161,175)&add==0
+			replace repx = popshare2018-0.2
+			replace repy = wouldvegotten+1.5
+			local replabgap=1.25
+			
+			replace and_tothe_right = popshare2018+0.58
+			replace down = gotten - 7
+			
+			qui sum fakedemneed if fakedemneed>46.8&add==0
+			gen fakelab = `"`altmap' Districts"' if fakedemneed == r(min)&add==0
+			qui sum demneed if demneed>50.3&add==0
+			gen actuallab = `"Actual Districts"' if demneed == r(min)&add==0
+					
+			sum fakeline
+			local liny = r(max)
+			sum fakelinex
+			local linx = r(max)
+		}
+
+		if "`altmap'"=="Proportional" {
+			replace fakeline = `fakegotten'+(fakedemseats-161)*0.4 if inrange(fakedemseats,161,175)&add==0
+			replace fakelinex = `demgot'+(fakedemseats-161)*0.17 if inrange(fakedemseats,161,175)&add==0
+			replace repx = popshare2018+0.1
+			replace repy = wouldvegotten+0.1
+			local replabgap=1.25
+			
+			replace and_tothe_right = popshare2018+0.56
+			replace down = gotten - 6.2
+			
+			qui sum fakedemneed if fakedemneed>41.3&add==0
+			gen fakelab = `"`altmapname2' Districts"' if fakedemneed == r(min)&add==0
+			qui sum demneed if demneed>50.3&add==0
+			gen actuallab = `"Actual Districts"' if demneed == r(min)&add==0
+					
+			sum fakeline
+			local liny = r(max)
+			sum fakelinex
+			local linx = r(max)
+		}
+
+		if "`altmap'"=="Competitive" {
+			replace fakeline = `fakegotten'+(fakedemseats-161)*0.5 if inrange(fakedemseats,161,175)&add==0
+			replace fakelinex = `demgot'+(fakedemseats-161)*0.09 if inrange(fakedemseats,161,175)&add==0
+			replace repx = popshare2018+0.1
+			replace repy = wouldvegotten+0.1
+			local replabgap=1.25
+			
+			replace and_tothe_right = popshare2018+0.56
+			replace down = gotten - 6.2
+			
+			qui sum fakedemneed if fakedemneed>44.9&add==0
+			gen fakelab = `"`altmapname2' Districts"' if fakedemneed == r(min)&add==0
+			qui sum demneed if demneed>50.3&add==0
+			gen actuallab = `"Actual Districts"' if demneed == r(min)&add==0
+					
+			sum fakeline
+			local liny = r(max)
+			sum fakelinex
+			local linx = r(max)
+			local fakelabloc = 4
+			local fakelabgap = 1
+		}
 
 		twoway scatter fakegotten popshare2018, m(none) mcol(gs8) msize(small) || ///
 		connected majority repneed, lcolor(sand) lwidth(medthin) m(none)|| ///
@@ -517,7 +569,7 @@ foreach altmap of local maps {
 		line repseats repneed, lcolor("220 34 34*.36") || ///
 		connected demseats demneed, lcolor("22 107 170*.36") m(none) mlab(actuallab) mlabpos(4) mlabcolor("22 107 170*.4") mlabgap(*.5) mlabsize(vsmall)|| ///
 		line fakerepseats fakerepneed, lcolor("220 34 34") || ///
-		connected fakedemseats fakedemneed, lcolor("22 107 170") m(none) mlab(fakelab) mlabpos(4) mlabcolor("22 107 170*1.1") mlabgap(*.5) mlabsize(vsmall)|| ///
+		connected fakedemseats fakedemneed, lcolor("22 107 170") m(none) mlab(fakelab) mlabpos(`fakelabloc') mlabcolor("22 107 170*1.1") mlabgap(*`fakelabgap') mlabsize(vsmall)|| ///
 		line fakeline fakelinex, lcolor(black) lwidth(vthin) || ///
 		scatteri `liny' `linx' (`demmarkerloc') "`fakegotten'", m(none) mlabsize(small) mlabcol("22 107 170") mlabgap(*0.2) || ///
 		scatter gotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
@@ -528,11 +580,86 @@ foreach altmap of local maps {
 		xtick(#`ticknum') ///
 		ylab(245 "Seats", add custom notick labsize(medsmall) labgap(*7)) ///
 		xtitle("Popular Vote Margin", height(4)) ///
-		title("Compact Districts, Following County Borders", size(medsmall)) plotregion(margin(zero)) graphregion(margin(medium)) ///
-		name(CompacttoExport, replace)
+		title("`altmapname2'", size(medsmall)) plotregion(margin(zero)) graphregion(margin(medium)) ///
+		name(`altmap'png, replace)
 		
-		graph export graphs/Compact.png, width(8000) replace
+		graph export graphs/`altmap'.png, width(8000) replace
 		
+		if "`altmap'"=="Compact" {
+			tempfile things integrationvals
+			save `things'
+			clear
+			set seed 1048576
+			local thisyear = 50+`marg'
+			local pastvals = "53 53.3 53.1 52.6 50.1 50.1 50.3 51.5 50.7 53.6 54.7 52.6 51.1 52.4 50.8"
+			local valcount = 1
+			set obs 15
+			gen x = .
+			foreach pastval of local pastvals {
+			replace x = `pastval' in `valcount'
+			local ++valcount
+			}
+			sum
+			describe
+			set obs `=_N+1'
+			replace x = `thisyear' in `=_N'
+			sum x
+			local sd = r(sd)
+			//expand 10000
+			gen got = x+`sd'/sqrt(15)*rt(15)
+			replace got = 50 + abs(got-50)
+			sum got
+			local max = r(max)
+			keep got
+			save `integrationvals'
+			use `things'
+			stack fakedemneed fakedemseats fakedemseats fakerepseats fakedemneed fakerepneed /**/ fakerepneed fakerepseats fakedemseats fakerepseats fakedemneed fakerepneed, into(need seats demseats repseats demneed repneed) clear
+			rename _stack party
+			sum need if need<50
+			sum seats if need>r(max)
+			keep if seats>`=r(min)-2'
+			gen otherpartyseats = .
+			forvalues i=1/`=_N' {
+				sum seats if need<need[`i']&party!=party[`i']
+				replace otherpartyseats = r(max) in `i'
+			}
+			gen demneedifrepwin = .
+			gen repneedifdemwin = .
+			forvalues i=1/`=_N' {
+			if party[`i']==1 {
+				sum repneed if repseats == seats[`i']
+				replace repneedifdemwin = r(mean) in `i'
+				sum demneed if demseats == otherpartyseats[`i']
+				replace demneedifrepwin = r(mean) in `i'
+			}
+			if party[`i']==2 {
+				sum demneed if demseats == seats[`i']
+				replace demneedifrepwin = r(mean) in `i'
+				sum repneed if repseats == otherpartyseats[`i']
+				replace repneedifdemwin = r(mean) in `i'
+			}
+			}
+			gen seatgap = otherpartyseats-seats
+			replace seatgap = -seatgap if party == 1
+			gen votegap = (demneedifrepwin/*-got+got*/-repneedifdemwin)/2
+			keep if need<=`max'
+			keep need seatgap votegap
+			keep if seatgap != .
+			cross using `integrationvals'
+			keep if got>need
+			gsort got
+			bys got: egen max = max(need)
+			keep if need == max
+			sum seatgap
+			global compactaverageseatgap = r(mean)
+			sum votegap
+			global compactaveragevotegap = 2*r(mean)
+			clear
+			
+			
+			use `things'
+		}
+
 		
 		tempfile stuff demlines
 		save `stuff'
@@ -553,7 +680,7 @@ foreach altmap of local maps {
 		sum fakedemneed
 		replace fakerepneed = r(max) if fakerepneed == .		
 		rename fake* *
-		export delim graphs/compactlines.csv, replace
+		export delim graphs/`altmap'lines.csv, replace
 		clear
 		use `stuff'
 
@@ -594,7 +721,7 @@ foreach altmap of local maps {
 		line repseats repneed, lcolor("220 34 34*.36") || ///
 		connected demseats demneed, lcolor("22 107 170*.36") m(none) mlab(actuallab) mlabpos(4) mlabcolor("22 107 170*.4") mlabgap(*.5) mlabsize(*.9)|| ///
 		line fakerepseats fakerepneed, lcolor("220 34 34") || ///
-		connected fakedemseats fakedemneed, lcolor("22 107 170") m(none) mlab(fakelab) mlabpos(4) mlabcolor("22 107 170*1.1") mlabgap(*.5) mlabsize(*.9)|| ///
+		connected fakedemseats fakedemneed, lcolor("22 107 170") m(none) mlab(fakelab) mlabpos(`fakelabloc') mlabcolor("22 107 170*1.1") mlabgap(*`fakelabgap') mlabsize(*.9)|| ///
 		line fakeline fakelinex, lcolor(black) lwidth(vthin) || ///
 		scatteri `liny' `linx' (`demmarkerloc') "`fakegotten'", m(none) mlabsize(small) mlabcol("22 107 170") mlabgap(*0.2) || ///
 		scatter gotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
@@ -608,15 +735,16 @@ foreach altmap of local maps {
 		ytick(`min' `max', add custom nolab tlcolor(lime)) ///
 		xtitle("Popular Vote Margin", height(4)) ///
 		/*title("Compact Districts, Following County Borders", size(medsmall))*/ plotregion(margin(zero)) graphregion(margin(0 5 0 2)) ///
-		name(CompacttoExport, replace)
+		name(`altmap'svg, replace)
 		
-		graph export graphs/Compact.svg, replace
+		graph export graphs/`altmap'.svg, replace
 		
 		
 	}
 	
 	local++counter
 	restore, preserve
+
 }
 
 
@@ -632,6 +760,7 @@ use `stateresults'
 merge 1:1 v1 using `algorithmiccompactstateresults', nogen
 merge 1:1 v1 using `Compactstateresults', nogen
 merge 1:1 v1 using `actualstateresults', nogen
+
 replace win2018 = win2018+1 if v1=="Utah"|v1=="Pennsylvania"|v1=="South Carolina"
 //this is the worst thing I've had to do, and I really wish I had the geographic data right now.
 //PVI makes pretty accurate predictions: it's off by 14 districts in 13 states (and 538 has the old PA districts).
@@ -657,3 +786,4 @@ graph hbar compactdiff0 compactdiff1 algorithmiccompactdiff0 algorithmiccompactd
 	name(stategerrymander, replace)
 
 graph export graphs/stategerrymander.png, width(8000) replace
+

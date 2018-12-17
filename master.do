@@ -111,6 +111,10 @@ local totalvotes = r(sum)
 local demtotalvotes = `totalvotes'*(.5+${marg}/100)
 local reptotalvotes = `totalvotes'*(.5-${marg}/100)
 local totalmarg = `demtotalvotes'-`reptotalvotes'
+sum contested if contested == 0&demvotes>0
+local demuncontested = r(sum)
+sum contested if contested == 0&repvotes>0
+local repuncontested = r(sum)
 
 preserve
 run code/uncropped.do
@@ -119,7 +123,6 @@ run code/multigraph.do
 restore, preserve
 run code/cropped.do
 
-//add number of uncontested races to the output here.
 #delimit ;
 di `"Stats for article: if the popular vote split 50-50, dems would win $ifeven seats.
 	If Dems won 75-25, they'd lose $dem75 seats.
@@ -129,8 +132,11 @@ di `"Stats for article: if the popular vote split 50-50, dems would win $ifeven 
 	The 2018 electorate was `compositionaleffect' more conservative.
 	On average, Democrats get $averageseatgap fewer seats with the same vote total.
 	Democrats need a margin that's $averagevotegap larger to win the same number of seats.
+	If maps were compact, on average, Democrats would get $compactaverageseatgap fewer seats with the same vote total.
+	If maps were compact, on average, Democrats would need a margin that's $compactaveragevotegap larger to win the same number of seats.
 	I used a polynomial of $order order to approximate vote shares based on PVI.
-	Out of `totalvotes', dems won `demtotalvotes' and reps won `reptotalvotes', giving dems a margin of `totalmarg'.
+	Out of `totalvotes' total votes, dems won `demtotalvotes' votes and reps won `reptotalvotes' votes, giving dems a margin of `totalmarg'.
+	Democrats had `demuncontested' uncontested victories, while Republicans had `repuncontested'.
 	$note
 	"';
 	

@@ -49,7 +49,7 @@ sum repneed if repneed<75
 global rep75 = 435-r(N)
 list if demseats == 218
 sum demneed if demseats == 218
-global demmaj = round(r(mean),0.001)
+global demmaj = r(mean)
 
 
 //gets average differences between D and R at the same level of votes/seats
@@ -79,7 +79,7 @@ set obs `=_N+1'
 replace x = `thisyear' in `=_N'
 sum x
 local sd = r(sd)
-expand 10000
+expand 10 //000
 gen got = x+`sd'/sqrt(15)*rt(15)
 replace got = 50 + abs(got-50)
 sum got
@@ -87,7 +87,7 @@ local max = r(max)
 keep got
 save `integrationvals'
 use `things'
-stack demneed demseats demseats repseats demneed repneed /**/ repneed repseats demseats repseats demneed repneed, into(need seats demseats repseats demneed repneed)
+stack demneed demseats demseats repseats demneed repneed /**/ repneed repseats demseats repseats demneed repneed, into(need seats demseats repseats demneed repneed) clear
 rename _stack party
 sum need if need<50
 sum seats if need>r(max)
