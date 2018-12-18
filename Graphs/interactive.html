@@ -6,7 +6,7 @@
 	<script src='https://npmcdn.com/babel-core@5.8.34/browser.min.js'></script>
 </head>
 <body>
-<div id="uncroppedContainer" style="width:75%;height:100%;min-width:350px">
+<div id="uncroppedContainer" style="width:80%;height:100%;min-width:350px;margin:auto;">
 <svg id = "uncropped" version="1.1" viewBox="0 0 3960 2880" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<rect x="0" y="0" width="3960" height="2880" style="fill:#FFFFFF;stroke:none"/>
 	<rect x="0.00" y="0.00" width="3959.88" height="2880.00" style="fill:#FFFFFF"/>
@@ -2156,7 +2156,7 @@ and more words
 
 
 
-<div id="croppedContainer" style="width:75%;height:100%;min-width:350px">
+<div id="croppedContainer" style="width:80%;height:100%;min-width:350px;margin:auto;">
 <svg id = "cropped" version="1.1" viewBox="0 0 3960 2880" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<rect x="0" y="0" width="3960" height="2880" style="fill:#FFFFFF;stroke:none"/>
 	<rect x="0.00" y="0.00" width="3959.88" height="2880.00" style="fill:#FFFFFF"/>
@@ -3041,7 +3041,7 @@ and more words
 </svg>
 </div>
 Additional words could also be placed in this space.
-<div id="compactContainer" style="width:75%;height:100%;min-width:350px">
+<div id="compactContainer" style="width:80%;height:100%;min-width:350px;margin:auto;">
 <svg id = "compact" version="1.1" viewBox="0 0 3960 2880" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<rect x="0" y="0" width="3960" height="2880" style="fill:#FFFFFF;stroke:none"/>
 	<rect x="0.00" y="0.00" width="3959.88" height="2880.00" style="fill:#FFFFFF"/>
@@ -4853,9 +4853,9 @@ Additional words could also be placed in this space.
 
 now the fair maps
 
-<div>
-	<div style="width:45%;height:100%;min-width:350px;margin:2%;float:left">
-		<svg version="1.1" viewBox="0 0 3960 2880" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<div style="width:90%;margin:auto;">
+	<div id="proportionalContainer" style="width:48%;height:100%;min-width:350px;float:left;margin:auto;">
+		<svg id="proportional" version="1.1" viewBox="0 0 3960 2880" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 			<rect x="0" y="0" width="3960" height="2880" style="fill:#FFFFFF;stroke:none"/>
 			<rect x="0.00" y="0.00" width="3959.88" height="2880.00" style="fill:#FFFFFF"/>
 			<rect x="2.88" y="2.88" width="3954.12" height="2874.24" style="fill:none;stroke:#FFFFFF;stroke-width:5.76"/>
@@ -6617,10 +6617,12 @@ now the fair maps
 			<line x1="2978.79" y1="2574.82" x2="2978.79" y2="2614.80" style="stroke:#000000;stroke-width:5.76"/>
 			<line x1="3815.83" y1="2574.82" x2="3815.83" y2="2614.80" style="stroke:#000000;stroke-width:5.76"/>
 			<text x="2141.62" y="2829.89" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">Popular Vote Margin</text>
+		<!--svg checklist: limit values, delete green ticks, move markings (stroke-linecap) at actual vote totals to overlay lines
+		also grab the pointer to the proportional value-->
 		</svg>
 	</div>
-	<div style="width:45%;height:100%;min-width:350px;margin:2%;float:left">
-		<svg version="1.1" viewBox="0 0 3960 2880" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<div id="competitiveContainer" style="width:48%;height:100%;min-width:350px;float:left;margin:auto;">
+		<svg id="competitive" version="1.1" viewBox="0 0 3960 2880" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 =		<rect x="0" y="0" width="3960" height="2880" style="fill:#FFFFFF;stroke:none"/>
 		<rect x="0.00" y="0.00" width="3959.88" height="2880.00" style="fill:#FFFFFF"/>
 		<rect x="2.88" y="2.88" width="3954.12" height="2874.24" style="fill:none;stroke:#FFFFFF;stroke-width:5.76"/>
@@ -8633,3 +8635,5 @@ now the fair maps
 <script lang='babel' type='text/babel' src='uncroppedscript.js'></script>
 <script lang='babel' type='text/babel' src='croppedscript.js'></script>
 <script lang='babel' type='text/babel' src='compactscript.js'></script>
+<script lang='babel' type='text/babel' src='proportionalscript.js'></script>
+<script lang='babel' type='text/babel' src='competitivescript.js'></script>
