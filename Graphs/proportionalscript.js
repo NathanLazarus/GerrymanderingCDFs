@@ -1,7 +1,7 @@
 //proportionalscript.js
 
 
-const margin = { top: 90.59, right: 3960-3815.83, bottom: 2880-2475.82, left: 467.53 };
+const margin = { top: 343.29, right: 3960-3815.83, bottom: 2880-2173.12, left: 467.53 };
 const width = 3960 - margin.left - margin.right;
 const height = 2880 - margin.top - margin.bottom;
 
@@ -31,7 +31,7 @@ const repline = d3.line()
 const svg = d3.select('#proportional').append('svg')
   .attr('viewBox', [-margin.left,-margin.top,3960,2880]);
 
-d3.csv("/compactlines.csv", type, (error, data) => {
+d3.csv("/proportionallines.csv", type, (error, data) => {
   if (error) throw error;
 
   const ylims = [Math.min(d3.min(data, d => d.demseats),d3.min(data, d => d.repseats)),
@@ -78,22 +78,22 @@ d3.csv("/compactlines.csv", type, (error, data) => {
       'opacity': '1'
     });*/
 
-  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2699.85" y1="1108.83" x2="2699.85" y2="1072.95" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
-  '<line x1="2699.85" y1="889.05" x2="2699.85" y2="853.16" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
-  '<line x1="2699.85" y1="937.06" x2="2730.05" y2="929.39" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2730.05" y1="929.39" x2="2760.12" y2="921.60" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2760.12" y1="921.60" x2="2790.32" y2="913.92" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2790.32" y1="913.92" x2="2820.51" y2="906.25" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2820.51" y1="906.25" x2="2850.58" y2="898.58" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2850.58" y1="898.58" x2="2880.78" y2="890.90" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2880.78" y1="890.90" x2="2910.85" y2="883.23" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2910.85" y1="883.23" x2="2941.04" y2="875.43" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2941.04" y1="875.43" x2="2971.11" y2="867.76" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2971.11" y1="867.76" x2="3001.31" y2="860.09" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3001.31" y1="860.09" x2="3031.38" y2="852.42" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3031.38" y1="852.42" x2="3061.57" y2="844.74" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3061.57" y1="844.74" x2="3091.65" y2="836.95" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3091.65" y1="836.95" x2="3121.84" y2="829.27" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>');
+  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2699.98" y1="1119.97" x2="2699.98" y2="1084.08" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
+  '<line x1="2699.98" y1="941.40" x2="2699.98" y2="905.51" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
+  '<line x1="2700.22" y1="950.31" x2="2728.69" y2="946.72" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2728.69" y1="946.72" x2="2757.15" y2="943.13" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2757.15" y1="943.13" x2="2785.61" y2="939.54" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2785.61" y1="939.54" x2="2814.07" y2="935.95" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2814.07" y1="935.95" x2="2842.54" y2="932.49" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2842.54" y1="932.49" x2="2871.00" y2="928.90" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2871.00" y1="928.90" x2="2899.46" y2="925.31" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2899.46" y1="925.31" x2="2927.93" y2="921.72" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2927.93" y1="921.72" x2="2956.39" y2="918.13" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2956.39" y1="918.13" x2="2984.85" y2="914.54" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2984.85" y1="914.54" x2="3013.31" y2="910.95" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="3013.31" y1="910.95" x2="3041.78" y2="907.49" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="3041.78" y1="907.49" x2="3070.24" y2="903.90" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="3070.24" y1="903.90" x2="3098.70" y2="900.31" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>');
 
   const focus4 = svg.append('g')
     .attr('class', 'focus4')
@@ -103,7 +103,7 @@ d3.csv("/compactlines.csv", type, (error, data) => {
     return Math.max(1.2*x, 1.2*x*500/containerheight);
   }
 
-  const tooltipheight = 400
+  const tooltipheight = 400-margin.top+84.4
   const rectwidth = newsize(318)
   const rectheight = newsize(250)
   const rect_y = -newsize(80)
@@ -116,7 +116,7 @@ d3.csv("/compactlines.csv", type, (error, data) => {
   const text_y_pad = rect_y + newsize(53)
   const small_gap = newsize(54)
   const big_gap = newsize(59)
-  const xvaloffset = 1.2*66
+  const xvaloffset = 1.2*318
 
 
   focus4.append('rect')
@@ -232,7 +232,7 @@ d3.csv("/compactlines.csv", type, (error, data) => {
     focusline4.select('line.y')
       .attr('x1', 0)
       .attr('x2', 0)
-      .attr('y1', -tooltipheight)
+      .attr('y1', -tooltipheight-margin.top+84.4)
       .attr('y2', height - tooltipheight+xvaloffset-newsize(xvalheight)+15);
 
     const rightbig = 98.5
@@ -274,7 +274,7 @@ d3.csv("/compactlines.csv", type, (error, data) => {
     focusline4.select('line.y')
       .attr('x1', 0)
       .attr('x2', 0)
-      .attr('y1', -tooltipheight)
+      .attr('y1', -tooltipheight-margin.top+84.4)
       .attr('y2', height - tooltipheight+xvaloffset-newsize(xvalheight)+15);
 
     const rightbig = 98.5

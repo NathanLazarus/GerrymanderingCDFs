@@ -111,10 +111,10 @@ local totalvotes = r(sum)
 local demtotalvotes = `totalvotes'*(.5+${marg}/100)
 local reptotalvotes = `totalvotes'*(.5-${marg}/100)
 local totalmarg = `demtotalvotes'-`reptotalvotes'
-sum contested if contested == 0&demvotes>0
-local demuncontested = r(sum)
-sum contested if contested == 0&repvotes>0
-local repuncontested = r(sum)
+sum contested if contested == 0&margin>0
+local demuncontested = r(N)
+sum contested if contested == 0&margin<0
+local repuncontested = r(N)
 
 preserve
 run code/uncropped.do

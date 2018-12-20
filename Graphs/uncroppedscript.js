@@ -77,8 +77,8 @@ d3.csv("/uncroppedlines.csv", type, (error, data) => {
     });*/
 
 
-  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2220.82" y1="1032.35" x2="2220.82" y2="996.47" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>'+
-  '<line x1="2220.82" y1="1135.81" x2="2220.82" y2="1099.92" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>');
+  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2220.82" y1="1135.81" x2="2220.82" y2="1099.92" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>'+
+  '<line x1="2220.82" y1="1032.35" x2="2220.82" y2="996.47" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>');
 
   const focus1 = svg.append('g')
     .attr('class', 'focus1')

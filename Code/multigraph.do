@@ -562,22 +562,34 @@ foreach altmap of local maps {
 			local fakelabloc = 4
 			local fakelabgap = 1
 		}
+		local label100 = ""
+		if "`altmap'"=="Proportional"|"`altmap'"=="Competitive"{
+			local label100 = "100"
+		}
+		local range = ""
+		if "`altmap'"=="Proportional"{
+			local range = "yscale(range(86,349))"
+		}
+
+
+
 
 		twoway scatter fakegotten popshare2018, m(none) mcol(gs8) msize(small) || ///
 		connected majority repneed, lcolor(sand) lwidth(medthin) m(none)|| ///
 		connected repseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) mlab(proportionallabel) m(none) mlabpos(11) mlabgap(*.5) mlabcol(gs5) || ///
 		line repseats repneed, lcolor("220 34 34*.36") || ///
-		connected demseats demneed, lcolor("22 107 170*.36") m(none) mlab(actuallab) mlabpos(4) mlabcolor("22 107 170*.4") mlabgap(*.5) mlabsize(vsmall)|| ///
+		connected demseats demneed, lcolor("22 107 170*.36") m(none) mlab(actuallab) mlabpos(4) mlabcolor("22 107 170*.4") mlabgap(*.5) mlabsize(*.95)|| ///
 		line fakerepseats fakerepneed, lcolor("220 34 34") || ///
-		connected fakedemseats fakedemneed, lcolor("22 107 170") m(none) mlab(fakelab) mlabpos(`fakelabloc') mlabcolor("22 107 170*1.1") mlabgap(*`fakelabgap') mlabsize(vsmall)|| ///
+		connected fakedemseats fakedemneed, lcolor("22 107 170") m(none) mlab(fakelab) mlabpos(`fakelabloc') mlabcolor("22 107 170*1.1") mlabgap(*`fakelabgap') mlabsize(*.95)|| ///
 		line fakeline fakelinex, lcolor(black) lwidth(vthin) || ///
 		scatteri `liny' `linx' (`demmarkerloc') "`fakegotten'", m(none) mlabsize(small) mlabcol("22 107 170") mlabgap(*0.2) || ///
 		scatter gotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
 		scatter down and_tothe_right, m(none) mlab(gotten) mlabpos(0) mlabsize(small) mlabcol("22 107 170*.6") || ///
 		scatter wouldvegotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
 		scatter repy repx, m(none) mlab(wouldvegotten) mlabpos(10) mlabsize(small) mlabcol("220 34 34*.6") mlabgap(*`replabgap') ///
-		ylab(200 300, labsize(small)) xlab(40 "-20" 50 "0" 60 "+20%  ") ///
+		ylab(`label100' 200 300, labsize(small)) xlab(40 "-20" 50 "0" 60 "+20%  ") ///
 		xtick(#`ticknum') ///
+		`range' ///
 		ylab(245 "Seats", add custom notick labsize(medsmall) labgap(*7)) ///
 		xtitle("Popular Vote Margin", height(4)) ///
 		title("`altmapname2'", size(medsmall)) plotregion(margin(zero)) graphregion(margin(medium)) ///
@@ -605,7 +617,7 @@ foreach altmap of local maps {
 			replace x = `thisyear' in `=_N'
 			sum x
 			local sd = r(sd)
-			//expand 10000
+			expand 10 //000
 			gen got = x+`sd'/sqrt(15)*rt(15)
 			replace got = 50 + abs(got-50)
 			sum got
@@ -697,7 +709,13 @@ foreach altmap of local maps {
 		local min = min(`min',r(min))
 		local max = max(`max',r(max))
 		local axismin = `min'-8
+		if "`altmap'"=="Proportional"|"`altmap'"=="Competitive"{ //getting proportional and competitive on the same axis
+			local axismin = 70
+		}
 		local axismax = `max'+3
+		if "`altmap'"=="Proportional" {
+			local axismax = 352
+		}
 
 /*twoway ///connected majority repneed, lcolor(sand) lwidth(medthin) mlabsize(small) m(none)|| ///
 	connected proportionalseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) m(none) yline(218, lcolor(sand)) || ///
@@ -719,9 +737,9 @@ foreach altmap of local maps {
 		///connected majority repneed, lcolor(sand) lwidth(medthin) m(none)|| ///
 		connected repseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) m(none) yline(218, lcolor(sand)) || ///
 		line repseats repneed, lcolor("220 34 34*.36") || ///
-		connected demseats demneed, lcolor("22 107 170*.36") m(none) mlab(actuallab) mlabpos(4) mlabcolor("22 107 170*.4") mlabgap(*.5) mlabsize(*.9)|| ///
+		connected demseats demneed, lcolor("22 107 170*.36") m(none) mlab(actuallab) mlabpos(4) mlabcolor("22 107 170*.4") mlabgap(*.5) mlabsize(*1.1)|| ///
 		line fakerepseats fakerepneed, lcolor("220 34 34") || ///
-		connected fakedemseats fakedemneed, lcolor("22 107 170") m(none) mlab(fakelab) mlabpos(`fakelabloc') mlabcolor("22 107 170*1.1") mlabgap(*`fakelabgap') mlabsize(*.9)|| ///
+		connected fakedemseats fakedemneed, lcolor("22 107 170") m(none) mlab(fakelab) mlabpos(`fakelabloc') mlabcolor("22 107 170*1.1") mlabgap(*`fakelabgap') mlabsize(*1.1)|| ///
 		line fakeline fakelinex, lcolor(black) lwidth(vthin) || ///
 		scatteri `liny' `linx' (`demmarkerloc') "`fakegotten'", m(none) mlabsize(small) mlabcol("22 107 170") mlabgap(*0.2) || ///
 		scatter gotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///

@@ -1,7 +1,8 @@
 //competitivescript.js
 
 
-const margin = { top: 90.59, right: 3960-3815.83, bottom: 2880-2475.82, left: 467.53 };
+const margin = { top: 84.40, right: 3960-3815.83, bottom: 2880-2432.01, left: 467.53 };
+//  84.4 is a dependency for the height of the line in proportionalscript.js
 const width = 3960 - margin.left - margin.right;
 const height = 2880 - margin.top - margin.bottom;
 
@@ -31,7 +32,7 @@ const repline = d3.line()
 const svg = d3.select('#competitive').append('svg')
   .attr('viewBox', [-margin.left,-margin.top,3960,2880]);
 
-d3.csv("/compactlines.csv", type, (error, data) => {
+d3.csv("/competitivelines.csv", type, (error, data) => {
   if (error) throw error;
 
   const ylims = [Math.min(d3.min(data, d => d.demseats),d3.min(data, d => d.repseats)),
@@ -78,22 +79,22 @@ d3.csv("/compactlines.csv", type, (error, data) => {
       'opacity': '1'
     });*/
 
-  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2699.85" y1="1108.83" x2="2699.85" y2="1072.95" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
-  '<line x1="2699.85" y1="889.05" x2="2699.85" y2="853.16" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
-  '<line x1="2699.85" y1="937.06" x2="2730.05" y2="929.39" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2730.05" y1="929.39" x2="2760.12" y2="921.60" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2760.12" y1="921.60" x2="2790.32" y2="913.92" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2790.32" y1="913.92" x2="2820.51" y2="906.25" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2820.51" y1="906.25" x2="2850.58" y2="898.58" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2850.58" y1="898.58" x2="2880.78" y2="890.90" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2880.78" y1="890.90" x2="2910.85" y2="883.23" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2910.85" y1="883.23" x2="2941.04" y2="875.43" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2941.04" y1="875.43" x2="2971.11" y2="867.76" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2971.11" y1="867.76" x2="3001.31" y2="860.09" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3001.31" y1="860.09" x2="3031.38" y2="852.42" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3031.38" y1="852.42" x2="3061.57" y2="844.74" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3061.57" y1="844.74" x2="3091.65" y2="836.95" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3091.65" y1="836.95" x2="3121.84" y2="829.27" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>');
+  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2699.98" y1="1119.97" x2="2699.98" y2="1084.08" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
+  '<line x1="2699.98" y1="941.40" x2="2699.98" y2="905.51" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
+  '<line x1="2700.22" y1="423.61" x2="2715.32" y2="419.15" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2715.32" y1="419.15" x2="2730.30" y2="414.70" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2730.30" y1="414.70" x2="2745.39" y2="410.24" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2745.39" y1="410.24" x2="2760.49" y2="405.79" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2760.49" y1="405.79" x2="2775.59" y2="401.33" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2775.59" y1="401.33" x2="2790.56" y2="396.88" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2790.56" y1="396.88" x2="2805.66" y2="392.42" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2805.66" y1="392.42" x2="2820.76" y2="387.97" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2820.76" y1="387.97" x2="2835.86" y2="383.51" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2835.86" y1="383.51" x2="2850.83" y2="379.06" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2850.83" y1="379.06" x2="2865.93" y2="374.60" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2865.93" y1="374.60" x2="2881.02" y2="370.02" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2881.02" y1="370.02" x2="2896.12" y2="365.57" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2896.12" y1="365.57" x2="2911.09" y2="361.11" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>');
 
   const focus5 = svg.append('g')
     .attr('class', 'focus5')
@@ -116,7 +117,7 @@ d3.csv("/compactlines.csv", type, (error, data) => {
   const text_y_pad = rect_y + newsize(53)
   const small_gap = newsize(54)
   const big_gap = newsize(59)
-  const xvaloffset = 1.2*66
+  const xvaloffset = 1.2*99
 
 
   focus5.append('rect')
