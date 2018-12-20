@@ -617,7 +617,7 @@ foreach altmap of local maps {
 			replace x = `thisyear' in `=_N'
 			sum x
 			local sd = r(sd)
-			expand 10 //000
+			expand 10000
 			gen got = x+`sd'/sqrt(15)*rt(15)
 			replace got = 50 + abs(got-50)
 			sum got
