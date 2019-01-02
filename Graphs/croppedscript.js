@@ -82,8 +82,8 @@ d3.csv("/croppedlines.csv", type, (error, data) => {
     });*/
 
 
-  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2676.71" y1="1055.87" x2="2676.71" y2="1019.98" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
-  '<line x1="2676.71" y1="804.52" x2="2676.71" y2="768.64" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>');
+  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2677.08" y1="1055.87" x2="2677.08" y2="1019.98" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
+  '<line x1="2677.08" y1="804.52" x2="2677.08" y2="768.64" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>');
 
   const focus2 = svg.append('g')
     .attr('class', 'focus2')
@@ -234,8 +234,11 @@ d3.csv("/croppedlines.csv", type, (error, data) => {
     const rightstop = Math.min(Math.max(rightsmall,rightsmall+(rightbig-rightsmall)*(containerwidth-350)/(containerwidth500-350)),rightbig)
     const leftstop = Math.max(Math.min(leftsmall,leftsmall-(leftsmall-leftbig)*(containerwidth-350)/(containerwidth500-350)),leftbig)
 
-    focus2.selectAll('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
+    focus2.select('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
       .attr('x', Math.max(Math.min(0,(rightstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(leftstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
+
+    console.log(Math.max(Math.min(0,(rightstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(leftstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
+    console.log(100)
 
     focus2.selectAll('.demlab').text("Democrats:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');
     focus2.selectAll('.demval').text(dem.demseats).style('text-anchor', 'left').style('font', newsize(yvalheight)+'px sans-serif').style('fill','#FFFFFF');
@@ -274,11 +277,8 @@ d3.csv("/croppedlines.csv", type, (error, data) => {
     const leftsmall = 5.5
     const rightstop = Math.min(Math.max(rightsmall,rightsmall+(rightbig-rightsmall)*(containerwidth-350)/(containerwidth500-350)),rightbig)
     const leftstop = Math.max(Math.min(leftsmall,leftsmall-(leftsmall-leftbig)*(containerwidth-350)/(containerwidth500-350)),leftbig)
-    console.log(containerwidth500)
-    console.log(containerwidth)
-    console.log(leftstop)
 
-    focus2.selectAll('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
+    focus2.select('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
       .attr('x', Math.max(Math.min(0,(rightstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(leftstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
 
     focus2.selectAll('.demlab').text("Democrats:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');

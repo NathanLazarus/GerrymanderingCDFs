@@ -31,7 +31,7 @@ const repline = d3.line()
 const svg = d3.select('#compact').append('svg')
   .attr('viewBox', [-margin.left,-margin.top,3960,2880]);
 
-d3.csv("/compactlines.csv", type, (error, data) => {
+d3.csv("/Compactlines.csv", type, (error, data) => {
   if (error) throw error;
 
   const ylims = [Math.min(d3.min(data, d => d.demseats),d3.min(data, d => d.repseats)),
@@ -79,21 +79,22 @@ d3.csv("/compactlines.csv", type, (error, data) => {
     });*/
 
   svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html(
-  '<line x1="2699.98" y1="889.05" x2="2699.98" y2="853.16" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
-  '<line x1="2699.98" y1="1108.83" x2="2699.98" y2="1072.95" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
-  '<line x1="2730.30" y1="929.39" x2="2760.49" y2="921.60" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2760.49" y1="921.60" x2="2790.56" y2="913.92" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2790.56" y1="913.92" x2="2820.76" y2="906.25" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2820.76" y1="906.25" x2="2850.83" y2="898.58" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2850.83" y1="898.58" x2="2881.02" y2="890.90" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2881.02" y1="890.90" x2="2911.09" y2="883.23" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2911.09" y1="883.23" x2="2941.29" y2="875.43" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2941.29" y1="875.43" x2="2971.49" y2="867.76" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="2971.49" y1="867.76" x2="3001.56" y2="860.09" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3001.56" y1="860.09" x2="3031.75" y2="852.42" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3031.75" y1="852.42" x2="3061.82" y2="844.74" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3061.82" y1="844.74" x2="3092.02" y2="836.95" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
-  '<line x1="3092.02" y1="836.95" x2="3122.09" y2="829.27" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>');
+  '<line x1="2700.22" y1="1108.83" x2="2700.22" y2="1072.95" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
+  '<line x1="2700.22" y1="889.05" x2="2700.22" y2="853.16" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
+  '<line x1="2700.22" y1="937.06" x2="2730.42" y2="929.39" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2730.42" y1="929.39" x2="2760.49" y2="921.60" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2760.49" y1="921.60" x2="2790.69" y2="913.92" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2790.69" y1="913.92" x2="2820.88" y2="906.25" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2820.88" y1="906.25" x2="2850.95" y2="898.58" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2850.95" y1="898.58" x2="2881.15" y2="890.90" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2881.15" y1="890.90" x2="2911.22" y2="883.23" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2911.22" y1="883.23" x2="2941.41" y2="875.43" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2941.41" y1="875.43" x2="2971.49" y2="867.76" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="2971.49" y1="867.76" x2="3001.68" y2="860.09" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="3001.68" y1="860.09" x2="3031.75" y2="852.42" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="3031.75" y1="852.42" x2="3061.95" y2="844.74" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="3061.95" y1="844.74" x2="3092.02" y2="836.95" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
+  '<line x1="3092.02" y1="836.95" x2="3122.21" y2="829.27" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>');
 
   const focus3 = svg.append('g')
     .attr('class', 'focus3')

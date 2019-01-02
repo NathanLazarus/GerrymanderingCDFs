@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- This is a Stata 15.0 generated SVG file (http://www.stata.com) -->
-
-<svg version="1.1" width="5.50in" height="4.00in" viewBox="0 0 3960 2880" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-	<desc>Stata Graph - Croppedsvg</desc>
+<svg version="1.1" viewBox="0 0 3960 2880" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<rect x="0" y="0" width="3960" height="2880" style="fill:#FFFFFF;stroke:none"/>
 	<rect x="0.00" y="0.00" width="3959.88" height="2880.00" style="fill:#FFFFFF"/>
 	<rect x="2.88" y="2.88" width="3954.12" height="2874.24" style="fill:none;stroke:#FFFFFF;stroke-width:5.76"/>
@@ -866,8 +862,8 @@
 	<text x="337.84" y="1505.76" style="font-family:'Helvetica';font-size:79.94px;fill:#000000" text-anchor="end">200</text>
 	<line x1="397.86" y1="221.02" x2="357.88" y2="221.02" style="stroke:#000000;stroke-width:5.76"/>
 	<text x="337.84" y="249.04" style="font-family:'Helvetica';font-size:79.94px;fill:#000000" text-anchor="end">300</text>
-	<line x1="397.86" y1="2420.38" x2="357.88" y2="2420.38" style="stroke:#00FF00;stroke-width:5.76"/>
-	<line x1="397.86" y1="95.29" x2="357.88" y2="95.29" style="stroke:#00FF00;stroke-width:5.76"/>
+	<!--line x1="397.86" y1="2420.38" x2="357.88" y2="2420.38" style="stroke:#00FF00;stroke-width:5.76"/>
+	<line x1="397.86" y1="95.29" x2="357.88" y2="95.29" style="stroke:#00FF00;stroke-width:5.76"/-->
 	<text x="127.34" y="1162.51" style="font-family:'Helvetica';font-size:79.94px;fill:#000000" text-anchor="middle">Seats</text>
 	<line x1="397.86" y1="2545.99" x2="3815.83" y2="2545.99" style="stroke:#000000;stroke-width:5.76"/>
 	<line x1="397.86" y1="2545.99" x2="397.86" y2="2585.96" style="stroke:#000000;stroke-width:5.76"/>
@@ -882,4 +878,5 @@
 	<line x1="2961.34" y1="2545.99" x2="2961.34" y2="2585.96" style="stroke:#000000;stroke-width:5.76"/>
 	<line x1="3815.83" y1="2545.99" x2="3815.83" y2="2585.96" style="stroke:#000000;stroke-width:5.76"/>
 	<text x="2106.84" y="2829.89" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">Popular Vote Margin</text>
+	<!--svg checklist: limit values, delete green ticks, move markings at actual vote totals to overlay lines-->
 </svg>

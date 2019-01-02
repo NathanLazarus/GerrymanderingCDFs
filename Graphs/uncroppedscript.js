@@ -228,9 +228,13 @@ d3.csv("/uncroppedlines.csv", type, (error, data) => {
     const rightstop = Math.min(Math.max(rightsmall,rightsmall+(rightbig-rightsmall)*(containerwidth-350)/(containerwidth500-350)),rightbig)
     const leftstop = Math.max(Math.min(leftsmall,leftsmall-(leftsmall-leftbig)*(containerwidth-350)/(containerwidth500-350)),leftbig)
 
-    focus1.selectAll('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
-      .attr('x', Math.max(Math.min(0,(leftstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(rightstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])))
-      .style('visibility', 'visible');
+    console.log(Math.max(Math.min(0,(rightstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(leftstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])));
+    const shiftx = Math.max(Math.min(0,(rightstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(leftstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0]))
+    console.log(100)
+
+    focus1.select('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
+      //.attr('x', Math.max(Math.min(0,(leftstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(rightstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])))
+      .attr('x', shiftx).style('visibility', 'visible');
 
     focus1.selectAll('.demlab').text("Democrats:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');
     focus1.selectAll('.demval').text(dem.demseats).style('text-anchor', 'left').style('font', newsize(yvalheight)+'px sans-serif').style('fill','#FFFFFF');
@@ -271,9 +275,9 @@ d3.csv("/uncroppedlines.csv", type, (error, data) => {
     const rightstop = Math.min(Math.max(rightsmall,rightsmall+(rightbig-rightsmall)*(containerwidth-350)/(containerwidth500-350)),rightbig)
     const leftstop = Math.max(Math.min(leftsmall,leftsmall-(leftsmall-leftbig)*(containerwidth-350)/(containerwidth500-350)),leftbig)
 
-    focus1.selectAll('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
-      .attr('x', Math.max(Math.min(0,(rightstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(leftstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])))
-      .style('visibility', 'visible');
+    focus1.select('.xval').text(Math.round((x0-50)*2*10)/10).style('text-anchor', 'middle').style('font', newsize(xvalheight) +'px sans-serif')
+      /*.attr('x', Math.max(Math.min(0,(rightstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])),(leftstop*(xlims[1]-xlims[0])/100-(x0-xlims[0]))*width/(xlims[1]-xlims[0])))
+      .style('visibility', 'visible');*/
 
     focus1.selectAll('.demlab').text("Democrats:").style('text-anchor', 'left').style('font', newsize(labheight)+'px sans-serif').style('fill','#FFFFFF');
     focus1.selectAll('.demval').text(dem.demseats).style('text-anchor', 'left').style('font', newsize(yvalheight)+'px sans-serif').style('fill','#FFFFFF');

@@ -31,7 +31,7 @@ const repline = d3.line()
 const svg = d3.select('#proportional').append('svg')
   .attr('viewBox', [-margin.left,-margin.top,3960,2880]);
 
-d3.csv("/proportionallines.csv", type, (error, data) => {
+d3.csv("/Proportionallines.csv", type, (error, data) => {
   if (error) throw error;
 
   const ylims = [Math.min(d3.min(data, d => d.demseats),d3.min(data, d => d.repseats)),
@@ -78,8 +78,8 @@ d3.csv("/proportionallines.csv", type, (error, data) => {
       'opacity': '1'
     });*/
 
-  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2699.98" y1="1119.97" x2="2699.98" y2="1084.08" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
-  '<line x1="2699.98" y1="941.40" x2="2699.98" y2="905.51" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
+  svg.append('svg').attr('viewBox', [margin.left,margin.top,3960,2880]).html('<line x1="2700.22" y1="1119.97" x2="2700.22" y2="1084.08" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
+  '<line x1="2700.22" y1="941.40" x2="2700.22" y2="905.51" stroke-linecap="round" style="fill:none;stroke:#000000;stroke-width:12.96"/>' +
   '<line x1="2700.22" y1="950.31" x2="2728.69" y2="946.72" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
   '<line x1="2728.69" y1="946.72" x2="2757.15" y2="943.13" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +
   '<line x1="2757.15" y1="943.13" x2="2785.61" y2="939.54" stroke-linecap="round" style="stroke:#000000;stroke-width:4.32"/>' +

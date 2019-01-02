@@ -756,6 +756,30 @@ foreach altmap of local maps {
 		name(`altmap'svg, replace)
 		
 		graph export graphs/`altmap'.svg, replace
+
+		//here's the SVG as a PNG, without the green ticks that I use to align the SVGs and then remove
+		twoway ///scatter fakegotten popshare2018, m(none) mcol(gs8) msize(small) || ///
+		///connected majority repneed, lcolor(sand) lwidth(medthin) m(none)|| ///
+		connected repseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) m(none) yline(218, lcolor(sand)) || ///
+		line repseats repneed, lcolor("220 34 34*.36") || ///
+		connected demseats demneed, lcolor("22 107 170*.36") m(none) mlab(actuallab) mlabpos(4) mlabcolor("22 107 170*.4") mlabgap(*.5) mlabsize(*1.1)|| ///
+		line fakerepseats fakerepneed, lcolor("220 34 34") || ///
+		connected fakedemseats fakedemneed, lcolor("22 107 170") m(none) mlab(fakelab) mlabpos(`fakelabloc') mlabcolor("22 107 170*1.1") mlabgap(*`fakelabgap') mlabsize(*1.1)|| ///
+		line fakeline fakelinex, lcolor(black) lwidth(vthin) || ///
+		scatteri `liny' `linx' (`demmarkerloc') "`fakegotten'", m(none) mlabsize(small) mlabcol("22 107 170") mlabgap(*0.2) || ///
+		scatter gotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
+		scatter down and_tothe_right, m(none) mlab(gotten) mlabpos(0) mlabsize(small) mlabcol("22 107 170*.6") || ///
+		scatter wouldvegotten popshare2018, m(`symbol') mcol(black) msize(medsmall) || ///
+		scatter repy repx, m(none) mlab(wouldvegotten) mlabpos(10) mlabsize(small) mlabcol("220 34 34*.6") mlabgap(*`replabgap') ///
+		ylab(100 200 300, labsize(small)) xlab(40 "-20" 50 "0" 60 "+20%  ") ///
+		xtick(#`ticknum') ///
+		yscale(range(`axismin',`axismax')) ///
+		ylab(245 "Seats", add custom notick labsize(medsmall) labgap(*7)) ///
+		xtitle("Popular Vote Margin", height(4)) ///
+		/*title("Compact Districts, Following County Borders", size(medsmall))*/ plotregion(margin(zero)) graphregion(margin(0 5 0 2)) ///
+		name(`altmap'InteractivePNG, replace)
+		
+		graph export graphs/`altmap'Interactive.png, width(8000) replace
 		
 		
 	}
