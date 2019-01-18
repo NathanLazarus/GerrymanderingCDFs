@@ -127,7 +127,7 @@ keep if need == max
 sum seatgap
 global averageseatgap = r(mean)
 sum votegap
-global averagevotegap = 2*r(mean)
+global averagevotegap = r(mean)
 clear
 
 

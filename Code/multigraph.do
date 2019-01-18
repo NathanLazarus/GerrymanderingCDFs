@@ -665,7 +665,7 @@ foreach altmap of local maps {
 			sum seatgap
 			global compactaverageseatgap = r(mean)
 			sum votegap
-			global compactaveragevotegap = 2*r(mean)
+			global compactaveragevotegap = r(mean)
 			clear
 			
 			
