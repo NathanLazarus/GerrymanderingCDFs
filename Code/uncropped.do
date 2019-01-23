@@ -139,15 +139,20 @@ replace demseats=demseats-add
 replace repseats=repseats-(1-add)
 sort demneed demseats
 
+gen empiricalrepshare = 100-empiricaldemshare
 set obs `=_N+2'
 replace repseats = 0 in `=_N-1'
 replace demseats = 435 in `=_N-1'
 replace repneed = 0 in `=_N-1'
 replace demneed = 100 in `=_N-1'
+replace empiricaldemshare = 0 in `=_N-1'
+replace empiricalrepshare = 100 in `=_N-1'
 replace repseats = 435 in `=_N'
 replace demseats = 0 in `=_N'
 replace repneed = 100 in `=_N'
 replace demneed = 0 in `=_N'
+replace empiricaldemshare = 100 in `=_N'
+replace empiricalrepshare = 0 in `=_N'
 sort demneed demseats
 
 
@@ -165,6 +170,12 @@ qui sum demneed if demneed>32&add==0
 gen demlab = `"Democrats"' if demneed == r(min)&add==0
 qui sum repneed if repneed>30&add==0
 gen replab = `"Republicans"' if repneed == r(min)&add==0
+
+qui sum demneed if demneed>55&add==0
+gen demlab2 = `"Democrats"' if demneed == r(min)&add==0
+qui sum repneed if repneed>46&add==0
+gen replab2 = `"Republicans"' if repneed == r(min)&add==0
+
 local symbol = "pipe"
 if c(version)<15 local symbol = "Oh"
 
@@ -239,4 +250,51 @@ twoway /*connected majority repneed, lcolor(sand) lwidth(medthin) mlab(majorityl
 	
 graph export graphs/UncroppedInteractive.png, width(8000) replace
 
+
+twoway connected majority repneed, lcolor(sand) lwidth(medthin) mlab(majoritylabel) m(none) mlabpos(2) mlabgap(*2.05) mlabcol("219 112 41") || ///
+	connected repseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) mlab(proportionallabel) m(none) mlabpos(11) mlabgap(*.5) mlabcol(gs5) || ///
+	connected demseats empiricalrepshare, lcolor("22 107 170") m(none) mlab(demlab2) mlabpos(9) mlabcolor("22 107 170*1.1") mlabgap(*3) mlabsize(*.9) ///
+	yscale(titlegap(*-6)) ylab(100(100)400, labsize(small)) ytick(435, add custom nolab tlcolor(white)) xlab(0 "-100" 25 "-50" 50 "0" 75 "50" 100 "+100% ") ///
+	xtick(0(12.5)100) ///
+	ytitle("Seats", height(-8) orientation(horizontal) size(small)) xtitle("Won by This Margin or Less", height(7)) ///
+	title("Empirical CDF of Congressional Margins") plotregion(margin(zero)) graphregion(margin(0 5 1 2)) ///
+	///note("Democrats won `gotten' seats with a popular vote margin of `demmarg'%.""Republicans could've won `gotten' seats with just `repmarg'%.""With `demmarg'%, Republicans would've won `wouldvegotten'.", size(vsmall) span) ///
+	///caption("@NathanLazarus3", size(vsmall) j(right) pos(5) ring(3)) ///
+	name(EmpiricalDem, replace)
+
+graph export graphs/EmpiricalDem.png, width(1000) replace
+
+twoway connected majority repneed, lcolor(sand) lwidth(medthin) mlab(majoritylabel) m(none) mlabpos(2) mlabgap(*2.05) mlabcol("219 112 41") || ///
+	connected repseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) mlab(proportionallabel) m(none) mlabpos(11) mlabgap(*.5) mlabcol(gs5) || ///
+	connected repseats empiricaldemshare, lcolor("220 34 34") m(none) mlab(replab2) mlabpos(3) mlabcolor("220 34 34*1.1") mlabgap(*2) mlabsize(*.9) || ///
+	connected demseats empiricalrepshare, lcolor("22 107 170") m(none) mlab(demlab2) mlabpos(9) mlabcolor("22 107 170*1.1") mlabgap(*3) mlabsize(*.9) ///
+	yscale(titlegap(*-6)) ylab(100(100)400, labsize(small)) ytick(435, add custom nolab tlcolor(white)) xlab(0 "-100" 25 "-50" 50 "0" 75 "50" 100 "+100% ") ///
+	xtick(0(12.5)100) ///
+	ytitle("Seats", height(-8) orientation(horizontal) size(small)) xtitle("Won by This Margin or Less", height(7)) ///
+	title("Empirical CDF of Congressional Margins") plotregion(margin(zero)) graphregion(margin(0 5 1 2)) ///
+	///note("Democrats won `gotten' seats with a popular vote margin of `demmarg'%.""Republicans could've won `gotten' seats with just `repmarg'%.""With `demmarg'%, Republicans would've won `wouldvegotten'.", size(vsmall) span) ///
+	///caption("@NathanLazarus3", size(vsmall) j(right) pos(5) ring(3)) ///
+	name(EmpiricalBoth, replace)
+
+graph export graphs/EmpiricalBoth.png, width(1000) replace
+
 global note = "Democrats won `gotten' seats with a popular vote margin of `demmarg'%. Republicans could've won `gotten' seats with just `repmarg'%. With `demmarg'%, Republicans would've won `wouldvegotten'."
+
+gen empiricaldemshifted = empiricaldemshare - ${marg} if empiricaldemshare != 0 & empiricaldemshare != 100
+replace empiricaldemshifted = empiricaldemshare if empiricaldemshare == 0 | empiricaldemshare == 100
+gen empiricalrepshifted = empiricalrepshare + ${marg} if empiricalrepshare != 0 & empiricalrepshare != 100
+replace empiricalrepshifted = empiricalrepshare if empiricalrepshare == 0 | empiricalrepshare == 100
+
+twoway connected majority repneed, lcolor(sand) lwidth(medthin) mlab(majoritylabel) m(none) mlabpos(2) mlabgap(*2.05) mlabcol("219 112 41") || ///
+	connected repseats proportional, lwidth(medthin) lpattern(dash) lcolor(gs5) mlab(proportionallabel) m(none) mlabpos(11) mlabgap(*.5) mlabcol(gs5) || ///
+	connected repseats empiricaldemshifted, lcolor("220 34 34") m(none) mlab(replab) mlabpos(3) mlabcolor("220 34 34*1.1") mlabgap(*2) mlabsize(*.9) || ///
+	connected demseats empiricalrepshifted, lcolor("22 107 170") m(none) mlab(demlab) mlabpos(9) mlabcolor("22 107 170*1.1") mlabgap(*1.5) mlabsize(*.9) ///
+	yscale(titlegap(*-6)) ylab(100(100)400, labsize(small)) ytick(435, add custom nolab tlcolor(white)) xlab(0 "-100" 25 "-50" 50 "0" 75 "50" 100 "+100% ") ///
+	xtick(0(12.5)100) ///
+	ytitle("Seats", height(-8) orientation(horizontal) size(small)) xtitle("Won by This Margin or Less", height(7)) ///
+	title("Empirical CDF of Congressional Margins") plotregion(margin(zero)) graphregion(margin(0 5 1 2)) ///
+	///note("Democrats won `gotten' seats with a popular vote margin of `demmarg'%.""Republicans could've won `gotten' seats with just `repmarg'%.""With `demmarg'%, Republicans would've won `wouldvegotten'.", size(vsmall) span) ///
+	///caption("@NathanLazarus3", size(vsmall) j(right) pos(5) ring(3)) ///
+	name(EmpiricalShifted, replace)
+
+graph export graphs/EmpiricalShifted.png, width(1000) replace

@@ -1,3 +1,5 @@
+Access-Control-Allow-Origin: *
+
 //uncroppedscript.js
 
 const margin = { top: 83.41, right: 3960-3815.83, bottom: 2880-2333.26, left: 397.86 };

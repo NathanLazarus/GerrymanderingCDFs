@@ -67,6 +67,7 @@ forvalues digit=1/15{
 replace shiftedclintonshare = exp(logclintonshare+`shiftnec')/(1+exp(logclintonshare+`shiftnec'))*100
 sum shiftedclintonshare if contested == 1 [iw=totalvotes]
 replace demshare = shiftedclintonshare if contested == 0
+gen empiricaldemshare = demshare
 
 //done dealing with uncontested races!
 
@@ -139,4 +140,3 @@ di `"Stats for article: if the popular vote split 50-50, dems would win $ifeven 
 	Democrats had `demuncontested' uncontested victories, while Republicans had `repuncontested'.
 	$note
 	"';
-	
